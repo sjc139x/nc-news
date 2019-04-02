@@ -7,8 +7,6 @@ exports.seed = function(knex, Promise) {
   .then(() => knex('users').insert(userData).returning('*'))
   .then(() => knex('topics').insert(topicData).returning('*'))
   .then(() => knex('articles').insert(formatArticleData(articleData)).returning('*'))
-  .then((articleSQLdata) => console.log(articleSQLdata))
-  .then(() => knex('comments').insert(commentData).returning('*'))
+  .then((articleSQLdata) => knex('comments').insert(formatCommentData(commentData, articleSQLdata)).returning('*'))
+  .then(() => console.log('PLS'))
 };
-
-// error: column "belongs_to" of relation "comments" does not exist
