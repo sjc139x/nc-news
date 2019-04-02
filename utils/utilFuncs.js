@@ -1,9 +1,8 @@
-//function to turn UNIX timestamp (milliseconds) into a js date object
-function formatArticleData (arr) {
-    if (arr === []) return [];
+
+function formatArticleData (articleArr) {
+    if (articleArr === []) return [];
     else {
-        
-        return arr.reduce((acc, item) => {
+        return articleArr.reduce((acc, item) => {
 
             acc.push({
                 title: item.title,
@@ -16,8 +15,30 @@ function formatArticleData (arr) {
             return acc;
 
         }, []);
-
     };
 };
 
-module.exports = formatArticleData;
+function formatCommentData (commentArr, articleArr) {
+    if (commentArr.length === 0 || articleArr.length === 0) return [];
+    else {
+        return commentArr.reduce((acc, item) => {
+
+            const articleInfo = articleArr.find(article => {
+                return article.title === item.belongs_to;
+            });
+
+            acc.push({
+                author: item.created_by,
+                article_id: articleInfo.article_id,
+                votes: item.votes,
+                created_at: new Date(item.created_at).toUTCString(),
+                body: item.body
+            });
+
+            return acc;
+
+        }, []);
+    }
+};
+
+module.exports = { formatArticleData, formatCommentData };
