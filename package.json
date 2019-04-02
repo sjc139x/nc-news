@@ -8,7 +8,8 @@
     "migrate-make": "knex migrate:make",
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",
-    "seed": "knex seed:run"
+    "seed": "knex seed:run",
+    "test": "mocha spec/*.spec.js"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +17,10 @@
   "dependencies": {
     "knex": "^0.16.3",
     "pg": "^7.9.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2",
+    "supertest": "^4.0.2"
   }
 }
