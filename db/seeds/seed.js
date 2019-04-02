@@ -4,7 +4,9 @@ exports.seed = function(knex, Promise) {
   return knex.migrate.rollback()
   .then(() => knex.migrate.latest())
   .then(() => knex('users').insert(userData).returning('*'))
-  .then((res) => console.log(res));
+  .then(() => knex('topics').insert(topicData).returning('*'))
+  .then(() => knex('articles').insert(articleData).returning('*'))
+  .then(() => console.log('dis one gon go 2 shit'));
 };
 
 
