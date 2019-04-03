@@ -8,5 +8,4 @@ exports.seed = function(knex, Promise) {
   .then(() => knex('topics').insert(topicData).returning('*'))
   .then(() => knex('articles').insert(formatArticleData(articleData)).returning('*'))
   .then((articleSQLdata) => knex('comments').insert(formatCommentData(commentData, articleSQLdata)).returning('*'))
-  .then(() => console.log('PLS'))
 };
