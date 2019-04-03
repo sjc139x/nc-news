@@ -1,9 +1,7 @@
-//must require in controllers here
+const sendTopics = require('../controllers/topics');
 
 const topicsRouter = require('express').Router();
 
-topicsRouter.get('/', (req, res) => {
-    res.send('Topics router...');
-});
+topicsRouter.route('/').get(sendTopics);
 
 module.exports = topicsRouter;

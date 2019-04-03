@@ -1,17 +1,19 @@
 process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
+const expect = chai.expect;
+
 const request = require('supertest');
 const app = require('../app/app');
-
-// const chai = require('chai');
-// const request = require('supertest');
-// const app = require('../app');
-// const connection = require('../db/connection');
-// const expect = chai.expect;
-// chai.use(require('chai-sorted'));
+const connection = require('../db/connection');
 
 describe('homepage', () => {
+
+    beforeEach(() => connection.seed.run());
+
+    after(() => {
+        connection.destroy();
+    });
 
     describe('/api', () => {
         
@@ -21,7 +23,7 @@ describe('homepage', () => {
                 return request(app)
                 .get('/api/topics')
                 .expect(200)
-                .then((response) => {
+                .then(response => {
                     const randomIndex = Math.floor(Math.random() * response.body.topics.length);
                     expect(response.body.topics).to.be.an('array');
                     expect(response.body.topics[randomIndex]).to.be.an('object');
