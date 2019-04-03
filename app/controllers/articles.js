@@ -1,4 +1,4 @@
-const fetchArticles = require('../models/articles');
+const { fetchArticles, fetchArticleByID } = require('../models/articles');
 
 function sendArticles (req, res) {
     fetchArticles(req.query)
@@ -7,4 +7,12 @@ function sendArticles (req, res) {
     });
 };
 
-module.exports = sendArticles;
+//do we need below? not very dry...
+function sendArticleByID (req, res) {
+    fetchArticleByID(req.params)
+    .then(articles => {
+        res.status(200).send({ articles });
+    });
+};
+
+module.exports = { sendArticles, sendArticleByID };

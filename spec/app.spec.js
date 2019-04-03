@@ -87,6 +87,16 @@ describe('homepage', () => {
                 });
             });
 
+            it('(GET // 200) serves up a single article as specified by the client with the article_id', () => {
+                return request(app)
+                .get('/api/articles/12')
+                .expect(200)
+                .then(response => {
+                    expect(response.body.articles.length).to.equal(1);
+                    expect(response.body.articles[0].body).to.equal('Have you seen the size of that thing?');
+                });
+            });
+
         });
 
     });
