@@ -1,9 +1,7 @@
-//must require in controllers here
+const sendArticles = require('../controllers/articles');
 
 const articlesRouter = require('express').Router();
 
-articlesRouter.get('/', (req, res) => {
-    res.send('Articles router...');
-});
+articlesRouter.route('/').get(sendArticles);
 
 module.exports = articlesRouter;
