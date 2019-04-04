@@ -21,11 +21,12 @@ function fetchArticleByID ({ article_id }) {
     });
 };
 
-function fetchCommentsByArticleID({ article_id }) {
+function fetchCommentsByArticleID({ article_id, sort_by, order }) {
     return connection
-    .select('article_id', 'comment_id', 'votes', 'created_at', 'author', 'body')
+    .select('comment_id', 'votes', 'created_at', 'author', 'body')
     .from('comments')
     .where('article_id', article_id)
+    .orderBy(sort_by || 'created_at', order || 'desc')
 };
 
 module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID };

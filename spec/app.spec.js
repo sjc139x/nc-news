@@ -99,16 +99,71 @@ describe('homepage', () => {
 
             it('(GET // 200) serves up comment info for the specific article, including keys of COMMENT_ID, VOTES, CREATED_AT, AUTHOR and BODY', () => {
                 return request(app)
-                .get('/api/articles/9/comments')
+                .get('/api/articles/1/comments')
                 .expect(200)
                 .then(response => {
-                    expect(response.body.comments.length).to.equal(2);
-                    expect(response.body.comments[0].author).to.equal('butter_bridge');
-                    expect(response.body.comments[1].body).to.equal('The owls are not what they seem.');
+                    const randomIndex = Math.floor(Math.random() * response.body.comments.length);
+                    expect(response.body.comments.length).to.equal(13);
+                    expect(response.body.comments[randomIndex]).to.have.all.keys('comment_id', 'votes', 'created_at', 'author', 'body');
                 });
             });
 
+            it('(GET // 200) allows client to sort article comments by any column (defaults to date)', () => {
+                return request(app)
+                //had to change this when my 'orderBy' changed to default to 'desc' - REVISIT
+                .get('/api/articles/1/comments?sort_by=votes')
+                .expect(200)
+                .then(response => {
+                    expect(response.body.comments).to.be.descendingBy('votes');
+                });
+            });
+
+            it('(GET // 200) allows client to specify comments sorting order (defaults to descending)', () => {
+                return request(app)
+                //just testing the base endpoint, because usually it would default to asc...
+                .get('/api/articles/1/comments')
+                .expect(200)
+                .then(response => {
+                    expect(response.body.comments).to.be.descendingBy('created_at')
+                });
+            });
+
+            // describe('errors...', () => {
+            //     it('GET // 404 responds with a 404 when given a non-existent article ID',()=>{
+            //         return request(app)
+            //         .get('/api/articles/999999')
+            //         .expect(404)
+            //         .then(response => {
+            //             console.log(response.body)
+            //             // expect(response.body.comments).to.be.ascendingBy('votes');
+            //         });
+            //     })
+            //     it('GET // 400 responds with a 400 when given a bad article ID',()=>{
+            //         return request(app)
+            //         .get('/api/articles/hello')
+
+            //         .then(response => {
+            //             console.log(response.body)
+            //             // expect(response.body.comments).to.be.ascendingBy('votes');
+            //         });
+            //     })
+            // });
+            
         });
+
+                describe('/users', () => {
+    
+                    it('(GET // 200) serves up specific user info using a parametric endpoint', () => {
+                        return request(app)
+                        .get('/api/users/butter_bridge')
+                        .expect(200)
+                        .then(response => {
+                            expect(response.body.user.length).to.equal(1);
+                            expect(response.body.user[0]).to.have.all.keys('username', 'avatar_url', 'name');
+                        });
+                    });
+        
+                });
 
     });
 

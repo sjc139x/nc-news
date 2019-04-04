@@ -1,9 +1,7 @@
-//must require in controllers here
+const sendUserByID = require('../controllers/users');
 
 const usersRouter = require('express').Router();
 
-usersRouter.get('/', (req, res) => {
-    res.send('Users router...');
-});
+usersRouter.route('/:username').get(sendUserByID);
 
 module.exports = usersRouter;
