@@ -21,4 +21,11 @@ function fetchArticleByID ({ article_id }) {
     });
 };
 
-module.exports = { fetchArticles, fetchArticleByID };
+function fetchCommentsByArticleID({ article_id }) {
+    return connection
+    .select('article_id', 'comment_id', 'votes', 'created_at', 'author', 'body')
+    .from('comments')
+    .where('article_id', article_id)
+};
+
+module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID };

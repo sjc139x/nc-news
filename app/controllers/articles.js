@@ -1,4 +1,4 @@
-const { fetchArticles, fetchArticleByID } = require('../models/articles');
+const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID } = require('../models/articles');
 
 function sendArticles (req, res) {
     fetchArticles(req.query)
@@ -15,4 +15,11 @@ function sendArticleByID (req, res) {
     });
 };
 
-module.exports = { sendArticles, sendArticleByID };
+function sendCommentsByArticleID (req, res) {
+    fetchCommentsByArticleID(req.params)
+    .then(comments => {
+        res.status(200).send({ comments });
+    })
+};
+
+module.exports = { sendArticles, sendArticleByID, sendCommentsByArticleID };

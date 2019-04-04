@@ -34,7 +34,7 @@ describe('homepage', () => {
 
         describe('/articles', () => {
             
-            it('(GET // 200) serves up an array of article objects, each with specific keys of AUTHOR, TITLE, ARTICLE_ID, TOPIC, CREATED_AT, VOTES AND COMMENT_COUNT', () => {
+            it('(GET // 200) serves up an array of article objects, each with specific keys of AUTHOR, TITLE, ARTICLE_ID, TOPIC, CREATED_AT, VOTES and COMMENT_COUNT', () => {
                 return request(app)
                 .get('/api/articles')
                 .expect(200)
@@ -94,6 +94,17 @@ describe('homepage', () => {
                 .then(response => {
                     expect(response.body.articles.length).to.equal(1);
                     expect(response.body.articles[0].body).to.equal('Have you seen the size of that thing?');
+                });
+            });
+
+            it('(GET // 200) serves up comment info for the specific article, including keys of COMMENT_ID, VOTES, CREATED_AT, AUTHOR and BODY', () => {
+                return request(app)
+                .get('/api/articles/9/comments')
+                .expect(200)
+                .then(response => {
+                    expect(response.body.comments.length).to.equal(2);
+                    expect(response.body.comments[0].author).to.equal('butter_bridge');
+                    expect(response.body.comments[1].body).to.equal('The owls are not what they seem.');
                 });
             });
 
