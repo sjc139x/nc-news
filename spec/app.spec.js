@@ -87,6 +87,50 @@ describe('homepage', () => {
                 });
             });
 
+            describe('ERRORS: /api/articles', () => {
+
+                it('(GET // 400)', () => {
+                    return request(app)
+                    .get('/api/articles?sort_by=dog')
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request');
+                    });
+                });
+
+                it('(GET // 400)', () => {
+                    return request(app)
+                    .get('/api/articles?order=dog')
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request');
+                    });
+                });
+
+                // it('(GET // 404)', () => {
+                //     return request(app)
+                //     .get('/api/articles?topic=nonexistenttopic')
+                //     .expect(404)
+                //     .then(response => {
+                //         expect(response.body.msg).to.equal('Resource Not Found');
+                //     });
+                // });
+
+                // it('(GET // 404)', () => {
+                //     return request(app)
+                //     .get('/api/articles?author=nonexistentauthor')
+                //     .expect(404)
+                //     .then(response => {
+                //         expect(response.body.msg).to.equal('Resource Not Found');
+                //     });
+                // });
+
+                // - Bad queries
+                // - `author` / `topic` that exists but does not have any articles
+                // associated with it (status: 200 & empty array of articles || 204)
+
+            });
+
             it('(GET // 200) serves up a single article as specified by the client with the article_id', () => {
                 return request(app)
                 .get('/api/articles/12')
@@ -127,27 +171,6 @@ describe('homepage', () => {
                     expect(response.body.comments).to.be.descendingBy('created_at')
                 });
             });
-
-            // describe('errors...', () => {
-            //     it('GET // 404 responds with a 404 when given a non-existent article ID',()=>{
-            //         return request(app)
-            //         .get('/api/articles/999999')
-            //         .expect(404)
-            //         .then(response => {
-            //             console.log(response.body)
-            //             // expect(response.body.comments).to.be.ascendingBy('votes');
-            //         });
-            //     })
-            //     it('GET // 400 responds with a 400 when given a bad article ID',()=>{
-            //         return request(app)
-            //         .get('/api/articles/hello')
-
-            //         .then(response => {
-            //             console.log(response.body)
-            //             // expect(response.body.comments).to.be.ascendingBy('votes');
-            //         });
-            //     })
-            // });
             
         });
 
