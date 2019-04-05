@@ -171,6 +171,28 @@ describe('homepage', () => {
                     expect(response.body.comments).to.be.descendingBy('created_at')
                 });
             });
+
+            it('(PATCH // 200) allows client to increment the votes property in the database', () => {
+                return request(app)
+                .patch('/api/articles/2')
+                .send({ inc_votes : 10 })
+                .expect(200)
+                .then(response => {
+                    expect(response.body.article.length).to.equal(1);
+                    expect(response.body.article[0].votes).to.equal(10);
+                });
+            });
+
+            it('(PATCH // 200) allows client to decrement the votes property in the database', () => {
+                return request(app)
+                .patch('/api/articles/2')
+                .send({ inc_votes : -10 })
+                .expect(200)
+                .then(response => {
+                    expect(response.body.article.length).to.equal(1);
+                    expect(response.body.article[0].votes).to.equal(-10);
+                });
+            });
             
         });
 
@@ -191,3 +213,13 @@ describe('homepage', () => {
     });
 
 });
+
+// request(app)
+// .post('/users')
+// .send(data)
+// .set('Accept', 'application/json')
+// .expect('Content-Type', /json/)
+// .expect(201)
+// .end((err) => {
+//     if (err) return done(err);
+//     done();

@@ -14,7 +14,7 @@ function fetchArticles ({ author, topic, sort_by, order }) {
 //do we need below? not very dry...
 function fetchArticleByID ({ article_id }) {
     return connection
-    .select('author', 'title', 'article_id', 'body', 'topic', 'created_at', 'votes')
+    .select('article_id', 'author', 'title', 'body', 'topic', 'created_at', 'votes')
     .from('articles')
     .modify(query => {
         if (article_id) query.where({ article_id });
@@ -29,4 +29,11 @@ function fetchCommentsByArticleID({ article_id, sort_by, order }) {
     .orderBy(sort_by || 'created_at', order || 'desc')
 };
 
-module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID };
+function updateArticle ({ article_id, inc_votes }) {
+    return connection('articles')
+    .where('article_id', article_id)
+    .increment('votes', inc_votes)
+    .returning('*')
+};
+
+module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle };
