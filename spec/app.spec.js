@@ -134,8 +134,8 @@ describe('homepage', () => {
                 .send({ inc_votes : 10 })
                 .expect(200)
                 .then(response => {
-                    expect(response.body.article.length).to.equal(1);
-                    expect(response.body.article[0].votes).to.equal(10);
+                    expect(response.body.article).to.be.an('object');
+                    expect(response.body.article.votes).to.equal(10);
                 });
             });
 
@@ -145,8 +145,8 @@ describe('homepage', () => {
                 .send({ inc_votes : -10 })
                 .expect(200)
                 .then(response => {
-                    expect(response.body.article.length).to.equal(1);
-                    expect(response.body.article[0].votes).to.equal(-10);
+                    expect(response.body.article).to.be.an('object');
+                    expect(response.body.article.votes).to.equal(-10);
                 });
             });
 
@@ -184,12 +184,39 @@ describe('homepage', () => {
 
                 it('(GET // 404)', () => {
                     return request(app)
-                    .get('/api/articles?order=dog')
-                    .expect(400)
+                    .get('/api/articles?author=me')
+                    .expect(404)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
+                        expect(response.body.msg).to.equal('Resource Not Found');
                     });
                 });
+
+                it('(GET // 404)', () => {
+                    return request(app)
+                    .get('/api/articles?topic=beingMe')
+                    .expect(404)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Resource Not Found');
+                    });
+                });
+
+                // it('(GET // 204)', () => {
+                //     return request(app)
+                //     .get('/api/articles?author=samC')
+                //     .expect(204)
+                //     .then(response => {
+                //         expect(response.body).to.equal('No Content');
+                //     });
+                // });
+
+                // it('(GET // 204)', () => {
+                //     return request(app)
+                //     .get('/api/articles?topic=dogs')
+                //     .expect(204)
+                //     .then(response => {
+                //         expect(response.body).to.equal('No Content');
+                //     });
+                // });
 
             });
 

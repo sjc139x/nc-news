@@ -34,7 +34,7 @@ function fetchCommentsByArticleID({ article_id, sort_by, order }) {
 function updateArticle ({ article_id, inc_votes }) {
     return connection('articles')
     .where('article_id', article_id)
-    .increment('votes', inc_votes)
+    .increment('votes', inc_votes || 0)
     .returning('*')
 };
 
