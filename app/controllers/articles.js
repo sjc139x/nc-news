@@ -11,10 +11,9 @@ function sendArticles (req, res, next) {
 
 function sendArticleByID (req, res, next) {
     fetchArticleByID(req.params)
-    .then(articles => {
-        if (articles.length === 0) return Promise.reject({code: 404, msg: 'Article Not Found'});
-        articles = articles[0];
-        res.status(200).send(articles);
+    .then(([articles]) => {
+        if (articles === {}) return Promise.reject({code: 404, msg: 'Article Not Found'});
+        res.status(200).send({ articles });
     })
     .catch(next);
 };
@@ -37,9 +36,8 @@ function sendUpdatedArticle (req, res, next) {
 
 function sendPostedComment (req, res, next) {
     postComment([ req.params, req.body ])
-    .then(comment => {
-        comment = comment[0];
-        res.status(201).send(comment);
+    .then(([comment]) => {
+        res.status(201).send({ comment });
     })
     .catch(next);
 };

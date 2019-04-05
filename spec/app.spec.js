@@ -87,35 +87,13 @@ describe('homepage', () => {
                 });
             });
 
-            describe('ERRORS: /api/articles', () => {
-
-                it('(GET // 400)', () => {
-                    return request(app)
-                    .get('/api/articles?sort_by=dog')
-                    .expect(400)
-                    .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
-                    });
-                });
-
-                it('(GET // 400)', () => {
-                    return request(app)
-                    .get('/api/articles?order=dog')
-                    .expect(400)
-                    .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
-                    });
-                });
-
-            });
-
             it('(GET // 200) serves up a single article as specified by the client with the article_id', () => {
                 return request(app)
                 .get('/api/articles/12')
                 .expect(200)
                 .then(response => {
-                    expect(response.body).to.be.an('object');
-                    expect(response.body.body).to.equal('Have you seen the size of that thing?');
+                    expect(response.body.articles).to.be.an('object');
+                    expect(response.body.articles.body).to.equal('Have you seen the size of that thing?');
                 });
             });
 
@@ -172,18 +150,49 @@ describe('homepage', () => {
                 });
             });
 
-            it('(POST // 200) allows client to post a comment to a specified article', () => {
+            it('(POST // 201) allows client to post a comment to a specified article', () => {
                 return request(app)
                 .post('/api/articles/8/comments')
                 .send({ username: "butter_bridge", body: "I'm nearly finished with my project and I'm so glad!" })
                 .expect(201)
                 .then(response => {
-                    expect(response.body).to.be.an('object');
-                    expect(response.body.body).to.equal("I'm nearly finished with my project and I'm so glad!");
-                    expect(response.body.author).to.equal("butter_bridge");
+                    expect(response.body.comment).to.be.an('object');
+                    expect(response.body.comment.body).to.equal("I'm nearly finished with my project and I'm so glad!");
+                    expect(response.body.comment.author).to.equal("butter_bridge");
                 });
             });
             
+            describe('ERRORS: /api/articles', () => {
+
+                it('(GET // 400)', () => {
+                    return request(app)
+                    .get('/api/articles?sort_by=dog')
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request');
+                    });
+                });
+
+                it('(GET // 400)', () => {
+                    return request(app)
+                    .get('/api/articles?order=dog')
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request');
+                    });
+                });
+
+                it('(GET // 404)', () => {
+                    return request(app)
+                    .get('/api/articles?order=dog')
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request');
+                    });
+                });
+
+            });
+
         });
 
                 describe('/users', () => {
@@ -193,8 +202,8 @@ describe('homepage', () => {
                         .get('/api/users/butter_bridge')
                         .expect(200)
                         .then(response => {
-                            expect(response.body).to.be.an('object');
-                            expect(response.body).to.have.all.keys('username', 'avatar_url', 'name');
+                            expect(response.body.user).to.be.an('object');
+                            expect(response.body.user).to.have.all.keys('username', 'avatar_url', 'name');
                         });
                     });
         
@@ -208,8 +217,8 @@ describe('homepage', () => {
                         .send({ inc_votes : 10 })
                         .expect(200)
                         .then(response => {
-                            expect(response.body).to.be.an('object');
-                            expect(response.body.votes).to.equal(10);
+                            expect(response.body.comment).to.be.an('object');
+                            expect(response.body.comment.votes).to.equal(10);
                         });
                     });
         
@@ -219,8 +228,8 @@ describe('homepage', () => {
                         .send({ inc_votes : -10 })
                         .expect(200)
                         .then(response => {
-                            expect(response.body).to.be.an('object');
-                            expect(response.body.votes).to.equal(-10);
+                            expect(response.body.comment).to.be.an('object');
+                            expect(response.body.comment.votes).to.equal(-10);
                         });
                     });
 
