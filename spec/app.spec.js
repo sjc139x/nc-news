@@ -193,6 +193,17 @@ describe('homepage', () => {
                     expect(response.body.article[0].votes).to.equal(-10);
                 });
             });
+
+            it('(POST // 200) allows client to post a comment to a specified article', () => {
+                return request(app)
+                .post('/api/articles/8/comments')
+                .send({ username: "butter_bridge", body: "I'm nearly finished with my project and I'm so glad!" })
+                .expect(201)
+                .then(response => {
+                    expect(response.body.comment[0].body).to.equal("I'm nearly finished with my project and I'm so glad!");
+                    expect(response.body.comment[0].author).to.equal("butter_bridge");
+                });
+            });
             
         });
 
@@ -234,7 +245,7 @@ describe('homepage', () => {
                         });
                     });
 
-                    it('(DELETE // 204 allows client to delete an entire comment', () => {
+                    it('(DELETE // 204) allows client to delete an entire comment', () => {
                         return request(app)
                         .delete('/api/comments/10')
                         .expect(204)

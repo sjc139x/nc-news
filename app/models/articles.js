@@ -36,4 +36,11 @@ function updateArticle ({ article_id, inc_votes }) {
     .returning('*')
 };
 
-module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle };
+function postComment ([ article_id, comment ]) {
+    return connection
+    .insert({ author: comment.username, article_id: article_id.article_id, body: comment.body })
+    .into('comments')
+    .returning('*')
+};
+
+module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment };

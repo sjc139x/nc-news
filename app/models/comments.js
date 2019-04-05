@@ -13,8 +13,4 @@ function deleteComment({ comment_id }) {
     .del('*')
 };
 
-// knex('accounts')
-//   .where('activated', false)
-//   .del()
-
 module.exports = { updateComment, deleteComment };
