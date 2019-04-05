@@ -1,9 +1,7 @@
-//must require in controllers here
+const sendUpdatedComment = require('../controllers/comments');
 
 const commentsRouter = require('express').Router();
 
-commentsRouter.get('/', (req, res) => {
-    res.send('Comments router...');
-});
+commentsRouter.route('/:comment_id').patch(sendUpdatedComment);
 
 module.exports = commentsRouter;

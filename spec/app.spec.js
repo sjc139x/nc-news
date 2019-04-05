@@ -172,7 +172,7 @@ describe('homepage', () => {
                 });
             });
 
-            it('(PATCH // 200) allows client to increment the votes property in the database', () => {
+            it('(PATCH // 200) allows client to increment the votes property in the articles table', () => {
                 return request(app)
                 .patch('/api/articles/2')
                 .send({ inc_votes : 10 })
@@ -183,7 +183,7 @@ describe('homepage', () => {
                 });
             });
 
-            it('(PATCH // 200) allows client to decrement the votes property in the database', () => {
+            it('(PATCH // 200) allows client to decrement the votes property in the articles table', () => {
                 return request(app)
                 .patch('/api/articles/2')
                 .send({ inc_votes : -10 })
@@ -210,16 +210,32 @@ describe('homepage', () => {
         
                 });
 
+                describe('/comments', () => {
+    
+                    it('(PATCH // 200) allows client to increment the votes property in the comments table', () => {
+                        return request(app)
+                        .patch('/api/comments/6')
+                        .send({ inc_votes : 10 })
+                        .expect(200)
+                        .then(response => {
+                            expect(response.body.comment.length).to.equal(1);
+                            expect(response.body.comment[0].votes).to.equal(10);
+                        });
+                    });
+        
+                    it('(PATCH // 200) allows client to decrement the votes property in the comments table', () => {
+                        return request(app)
+                        .patch('/api/comments/6')
+                        .send({ inc_votes : -10 })
+                        .expect(200)
+                        .then(response => {
+                            expect(response.body.comment.length).to.equal(1);
+                            expect(response.body.comment[0].votes).to.equal(-10);
+                        });
+                    });
+        
+                });
+
     });
 
 });
-
-// request(app)
-// .post('/users')
-// .send(data)
-// .set('Accept', 'application/json')
-// .expect('Content-Type', /json/)
-// .expect(201)
-// .end((err) => {
-//     if (err) return done(err);
-//     done();
