@@ -9,7 +9,6 @@ function sendArticles (req, res, next) {
     .catch(next);
 };
 
-//do we need below? not very dry...
 function sendArticleByID (req, res, next) {
     fetchArticleByID(req.params)
     .then(articles => {

@@ -42,7 +42,7 @@ describe('homepage', () => {
                     const randomIndex = Math.floor(Math.random() * response.body.articles.length);
                     expect(response.body.articles).to.be.an('array');
                     expect(response.body.articles[randomIndex]).to.be.an('object');
-                    // expect(response.body.articles[randomIndex]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count');
+                    expect(response.body.articles[randomIndex]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count');
                 });
             });
 
@@ -106,28 +106,6 @@ describe('homepage', () => {
                         expect(response.body.msg).to.equal('Bad Request');
                     });
                 });
-
-                // it('(GET // 404)', () => {
-                //     return request(app)
-                //     .get('/api/articles?topic=nonexistenttopic')
-                //     .expect(404)
-                //     .then(response => {
-                //         expect(response.body.msg).to.equal('Resource Not Found');
-                //     });
-                // });
-
-                // it('(GET // 404)', () => {
-                //     return request(app)
-                //     .get('/api/articles?author=nonexistentauthor')
-                //     .expect(404)
-                //     .then(response => {
-                //         expect(response.body.msg).to.equal('Resource Not Found');
-                //     });
-                // });
-
-                // - Bad queries
-                // - `author` / `topic` that exists but does not have any articles
-                // associated with it (status: 200 & empty array of articles || 204)
 
             });
 

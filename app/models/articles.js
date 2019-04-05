@@ -2,16 +2,18 @@ const connection = require('../../db/connection');
 
 function fetchArticles ({ author, topic, sort_by, order }) {
     return connection
-    .select('author', 'title', 'article_id', 'topic', 'created_at', 'votes')
+    .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
     .from('articles')
+    .leftJoin('comments', 'articles.article_id', 'comments.article_id')
+    .groupBy('articles.article_id')
+    .count('comments.comment_id as comment_count')
     .orderBy(sort_by || 'created_at', order || 'desc')
     .modify(query => {
-        if (author) query.where({ author });
+        if (author) query.where({ 'articles.author': author });
         if (topic) query.where({ topic });
     });
 };
 
-//do we need below? not very dry...
 function fetchArticleByID ({ article_id }) {
     return connection
     .select('article_id', 'author', 'title', 'body', 'topic', 'created_at', 'votes')
