@@ -7,4 +7,14 @@ function updateComment ({ comment_id, inc_votes }) {
     .returning('*')
 };
 
-module.exports = updateComment;
+function deleteComment({ comment_id }) {
+    return connection('comments')
+    .where('comment_id', comment_id)
+    .del('*')
+};
+
+// knex('accounts')
+//   .where('activated', false)
+//   .del()
+
+module.exports = { updateComment, deleteComment };

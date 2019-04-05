@@ -233,6 +233,15 @@ describe('homepage', () => {
                             expect(response.body.comment[0].votes).to.equal(-10);
                         });
                     });
+
+                    it('(DELETE // 204 allows client to delete an entire comment', () => {
+                        return request(app)
+                        .delete('/api/comments/10')
+                        .expect(204)
+                        .then(response => {
+                            expect(response.body).to.eql({});
+                        })
+                    });
         
                 });
 
