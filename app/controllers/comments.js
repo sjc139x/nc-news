@@ -3,7 +3,8 @@ const { updateComment, deleteComment } = require('../models/comments');
 function sendUpdatedComment (req, res, next) {
     updateComment({ ...req.params, ...req.body })
     .then(comment => {
-        res.status(200).send({ comment });
+        comment = comment[0];
+        res.status(200).send(comment);
     })
     .catch(next);
 };

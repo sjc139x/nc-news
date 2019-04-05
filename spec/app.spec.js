@@ -136,8 +136,8 @@ describe('homepage', () => {
                 .get('/api/articles/12')
                 .expect(200)
                 .then(response => {
-                    expect(response.body.articles.length).to.equal(1);
-                    expect(response.body.articles[0].body).to.equal('Have you seen the size of that thing?');
+                    expect(response.body).to.be.an('object');
+                    expect(response.body.body).to.equal('Have you seen the size of that thing?');
                 });
             });
 
@@ -200,8 +200,9 @@ describe('homepage', () => {
                 .send({ username: "butter_bridge", body: "I'm nearly finished with my project and I'm so glad!" })
                 .expect(201)
                 .then(response => {
-                    expect(response.body.comment[0].body).to.equal("I'm nearly finished with my project and I'm so glad!");
-                    expect(response.body.comment[0].author).to.equal("butter_bridge");
+                    expect(response.body).to.be.an('object');
+                    expect(response.body.body).to.equal("I'm nearly finished with my project and I'm so glad!");
+                    expect(response.body.author).to.equal("butter_bridge");
                 });
             });
             
@@ -214,8 +215,8 @@ describe('homepage', () => {
                         .get('/api/users/butter_bridge')
                         .expect(200)
                         .then(response => {
-                            expect(response.body.user.length).to.equal(1);
-                            expect(response.body.user[0]).to.have.all.keys('username', 'avatar_url', 'name');
+                            expect(response.body).to.be.an('object');
+                            expect(response.body).to.have.all.keys('username', 'avatar_url', 'name');
                         });
                     });
         
@@ -229,8 +230,8 @@ describe('homepage', () => {
                         .send({ inc_votes : 10 })
                         .expect(200)
                         .then(response => {
-                            expect(response.body.comment.length).to.equal(1);
-                            expect(response.body.comment[0].votes).to.equal(10);
+                            expect(response.body).to.be.an('object');
+                            expect(response.body.votes).to.equal(10);
                         });
                     });
         
@@ -240,8 +241,8 @@ describe('homepage', () => {
                         .send({ inc_votes : -10 })
                         .expect(200)
                         .then(response => {
-                            expect(response.body.comment.length).to.equal(1);
-                            expect(response.body.comment[0].votes).to.equal(-10);
+                            expect(response.body).to.be.an('object');
+                            expect(response.body.votes).to.equal(-10);
                         });
                     });
 
