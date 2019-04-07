@@ -166,7 +166,7 @@ describe('homepage', () => {
 
                 it('(GET // 400)', () => {
                     return request(app)
-                    .get('/api/articles?sort_by=dog')
+                    .get('/api/articles?sort_by=abc')
                     .expect(400)
                     .then(response => {
                         expect(response.body.msg).to.equal('Bad Request');
@@ -175,14 +175,14 @@ describe('homepage', () => {
 
                 it('(GET // 400)', () => {
                     return request(app)
-                    .get('/api/articles?order=dog')
+                    .get('/api/articles?order=abc')
                     .expect(400)
                     .then(response => {
                         expect(response.body.msg).to.equal('Bad Request');
                     });
                 });
 
-                it('(GET // 404)', () => {
+                xit('(GET // 404)', () => {
                     return request(app)
                     .get('/api/articles?author=me')
                     .expect(404)
@@ -191,7 +191,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 404)', () => {
+                xit('(GET // 404)', () => {
                     return request(app)
                     .get('/api/articles?topic=beingMe')
                     .expect(404)
@@ -200,23 +200,50 @@ describe('homepage', () => {
                     });
                 });
 
-                // it('(GET // 204)', () => {
-                //     return request(app)
-                //     .get('/api/articles?author=samC')
-                //     .expect(204)
-                //     .then(response => {
-                //         expect(response.body).to.equal('No Content');
-                //     });
-                // });
+                xit('(GET // 204)', () => {
+                    return request(app)
+                    .get('/api/articles?author=samC')
+                    .expect(204)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('No Content');
+                    });
+                });
 
-                // it('(GET // 204)', () => {
-                //     return request(app)
-                //     .get('/api/articles?topic=dogs')
-                //     .expect(204)
-                //     .then(response => {
-                //         expect(response.body).to.equal('No Content');
-                //     });
-                // });
+                xit('(GET // 204)', () => {
+                    return request(app)
+                    .get('/api/articles?topic=dogs')
+                    .expect(204)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('No Content');
+                    });
+                });
+
+                it('(PATCH // 405)', () => {
+                    return request(app)
+                    .patch('/api/articles')
+                    .expect(405)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Method Not Allowed');
+                    });
+                });
+
+                it('(PUT // 405)', () => {
+                    return request(app)
+                    .put('/api/articles/2')
+                    .expect(405)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Method Not Allowed');
+                    });
+                });
+
+                it('(PUT // 405)', () => {
+                    return request(app)
+                    .put('/api/articles/2/comments')
+                    .expect(405)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Method Not Allowed');
+                    });
+                });
 
             });
 
@@ -232,6 +259,19 @@ describe('homepage', () => {
                             expect(response.body.user).to.be.an('object');
                             expect(response.body.user).to.have.all.keys('username', 'avatar_url', 'name');
                         });
+                    });
+
+                    describe('ERRORS: /api/users', () => {
+
+                        it('(PUT // 405)', () => {
+                            return request(app)
+                            .put('/api/users/icellusedkars')
+                            .expect(405)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Method Not Allowed');
+                            });
+                        });
+
                     });
         
                 });
@@ -268,7 +308,37 @@ describe('homepage', () => {
                             expect(response.body).to.eql({});
                         })
                     });
+
+                    describe('ERRORS: /api/comments', () => {
+
+                        it('(PUT // 405)', () => {
+                            return request(app)
+                            .put('/api/comments/5')
+                            .expect(405)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Method Not Allowed');
+                            });
+                        });
+
+                    });
         
+                });
+
+                describe('/api', () => {
+
+                    describe('ERRORS: /api', () => {
+
+                        it('(DELETE // 405)', () => {
+                            return request(app)
+                            .delete('/api')
+                            .expect(405)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Method Not Allowed');
+                            });
+                        });
+
+                    });
+
                 });
 
     });

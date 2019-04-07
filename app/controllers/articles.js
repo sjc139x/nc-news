@@ -3,8 +3,7 @@ const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle
 function sendArticles (req, res, next) {
     fetchArticles(req.query)
     .then(articles => {
-        if ((req.query.author || req.query.topic) && (articles.length === 0)) return Promise.reject({code: 404});
-        else if ((req.query.order) && (req.query.order !== 'asc' && req.query.order !== 'desc')) return Promise.reject({code: 400});
+        if ((req.query.order) && (req.query.order !== 'asc' && req.query.order !== 'desc')) return Promise.reject({code: 400});
         else res.status(200).send({ articles });
     })
     .catch(next);
@@ -13,7 +12,6 @@ function sendArticles (req, res, next) {
 function sendArticleByID (req, res, next) {
     fetchArticleByID(req.params)
     .then(([articles]) => {
-        if (articles === {}) return Promise.reject({code: 404, msg: 'Article Not Found'});
         res.status(200).send({ articles });
     })
     .catch(next);

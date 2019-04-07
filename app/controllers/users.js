@@ -4,7 +4,8 @@ function sendUserByID (req, res, next) {
     fetchUserByID(req.params)
     .then(([user]) => {
         res.status(200).send({ user });
-    });
+    })
+    .catch(next);
 };
 
 module.exports = sendUserByID;
