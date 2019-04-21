@@ -8,7 +8,6 @@ function sendUpdatedComment (req, res, next) {
     .catch(next);
 };
 
-//can delete send from below?
 function confirmDeletedComment (req, res, next) {
     deleteComment(req.params)
     .then(() => {

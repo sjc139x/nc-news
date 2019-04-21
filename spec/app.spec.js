@@ -161,6 +161,7 @@ describe('homepage', () => {
                     expect(response.body.comment.author).to.equal("butter_bridge");
                 });
             });
+
             
             describe('ERRORS: /api/articles', () => {
 
@@ -182,7 +183,7 @@ describe('homepage', () => {
                     });
                 });
 
-                xit('(GET // 404)', () => {
+                it('(GET // 404)', () => {
                     return request(app)
                     .get('/api/articles?author=me')
                     .expect(404)
@@ -191,7 +192,7 @@ describe('homepage', () => {
                     });
                 });
 
-                xit('(GET // 404)', () => {
+                it('(GET // 404)', () => {
                     return request(app)
                     .get('/api/articles?topic=beingMe')
                     .expect(404)
@@ -200,21 +201,30 @@ describe('homepage', () => {
                     });
                 });
 
-                xit('(GET // 204)', () => {
+                it('(GET // 204)', () => {
                     return request(app)
                     .get('/api/articles?author=samC')
                     .expect(204)
                     .then(response => {
-                        expect(response.body.msg).to.equal('No Content');
+                        expect(response.body).to.eql({});
                     });
                 });
 
-                xit('(GET // 204)', () => {
+                it('(GET // 204)', () => {
                     return request(app)
                     .get('/api/articles?topic=dogs')
                     .expect(204)
                     .then(response => {
-                        expect(response.body.msg).to.equal('No Content');
+                        expect(response.body).to.eql({});
+                    });
+                });
+
+                it('(GET // 404)', () => {
+                    return request(app)
+                    .get('/api/articles/10000/comments')
+                    .expect(404)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Resource Not Found');
                     });
                 });
 

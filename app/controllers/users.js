@@ -1,4 +1,4 @@
-const fetchUserByID = require('../models/users');
+const { fetchUserByID, checkUser } = require('../models/users');
 
 function sendUserByID (req, res, next) {
     fetchUserByID(req.params)

@@ -1,11 +1,29 @@
 const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment } = require('../models/articles');
+const { checkTopic } = require('../models/topics');
+const { checkUser } = require('../models/users');
 
 function sendArticles (req, res, next) {
     fetchArticles(req.query)
     .then(articles => {
         if ((req.query.order) && (req.query.order !== 'asc' && req.query.order !== 'desc')) return Promise.reject({code: 400});
+        
+        else if (articles.length === 0 && req.query.topic) {
+            checkTopic(req.query.topic).then(([topic]) => {
+                if (topic) res.status(204).send();
+                else Promise.reject({code: 404}).catch(next);
+            });
+        }
+        
+        else if (articles.length === 0 && req.query.author) {
+            checkUser(req.query.author).then(([author]) => {
+                if (author) res.status(204).send();
+                else Promise.reject({code: 404}).catch(next);
+            });
+        }
+        
         else res.status(200).send({ articles });
     })
+    
     .catch(next);
 };
 

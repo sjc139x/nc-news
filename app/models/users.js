@@ -7,4 +7,14 @@ function fetchUserByID ({ username }) {
     .where('username', username)
 };
 
-module.exports = fetchUserByID;
+function checkUser (username) {
+    return connection
+    .select('username')
+    .from('users')
+    .where('username', username)
+    .then((res) => {
+        return res;
+    });
+};
+
+module.exports = { fetchUserByID, checkUser };
