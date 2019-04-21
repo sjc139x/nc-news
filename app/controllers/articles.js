@@ -1,6 +1,7 @@
-const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment } = require('../models/articles');
+const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle } = require('../models/articles');
 const { checkTopic } = require('../models/topics');
 const { checkUser } = require('../models/users');
+const { checkBodyFormat } = require('../../utils/utilFuncs');
 
 function sendArticles (req, res, next) {
     fetchArticles(req.query)
@@ -23,7 +24,7 @@ function sendArticles (req, res, next) {
         
         else res.status(200).send({ articles });
     })
-    
+
     .catch(next);
 };
 
@@ -38,7 +39,13 @@ function sendArticleByID (req, res, next) {
 function sendCommentsByArticleID (req, res, next) {
     fetchCommentsByArticleID({ ...req.params, ...req.query })
     .then(comments => {
-        res.status(200).send({ comments });
+        if ((comments.length === 0) && req.params.article_id) {
+            checkArticle(req.params.article_id).then(([article_id]) => {
+                if (article_id) res.status(204).send();
+                else Promise.reject({code: 404}).catch(next);
+            });
+        }
+        else res.status(200).send({ comments });
     })
     .catch(next);
 };
@@ -52,9 +59,17 @@ function sendUpdatedArticle (req, res, next) {
 };
 
 function sendPostedComment (req, res, next) {
-    postComment([ req.params, req.body ])
-    .then(([comment]) => {
-        res.status(201).send({ comment });
+    checkArticle(req.params.article_id)
+    .then(([article_id]) => {
+        if (article_id) {
+            if (checkBodyFormat(req.body)) {
+                postComment([ req.params, req.body ])
+                .then(([comment]) => {
+                    res.status(201).send({ comment });
+                })
+            } else Promise.reject({code: 400}).catch(next);
+        }
+        else Promise.reject({code: 404}).catch(next);
     })
     .catch(next);
 };

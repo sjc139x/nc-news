@@ -41,4 +41,9 @@ function formatCommentData (commentArr, articleArr) {
     }
 };
 
-module.exports = { formatArticleData, formatCommentData };
+function checkBodyFormat (body) {
+    if (Object.keys(body).toString() === [ 'username', 'body' ].toString()) return true;
+    else return false;
+};
+
+module.exports = { formatArticleData, formatCommentData, checkBodyFormat };

@@ -45,4 +45,14 @@ function postComment ([ article_id, comment ]) {
     .returning('*')
 };
 
-module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment };
+function checkArticle (article_id) {
+    return connection
+    .select('article_id')
+    .from('articles')
+    .where('article_id', article_id)
+    .then((res) => {
+        return res;
+    });
+};
+
+module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle };

@@ -255,6 +255,26 @@ describe('homepage', () => {
                     });
                 });
 
+                it('(POST // 404)', () => {
+                    return request(app)
+                    .post('/api/articles/10000/comments')
+                    .send({ username: "butter_bridge", body: "I'm nearly finished with my project and I'm so glad!" })
+                    .expect(404)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Resource Not Found');
+                    });
+                });
+
+                it('(POST // 400)', () => {
+                    return request(app)
+                    .post('/api/articles/1/comments')
+                    .send({ body: "I'm nearly finished with my project and I'm so glad!" })
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request');
+                    });
+                });
+
             });
 
         });

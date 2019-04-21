@@ -1,6 +1,8 @@
 const { expect } = require('chai');
-const { formatArticleData, formatCommentData } = require('../utils/utilFuncs');
+const { formatArticleData, formatCommentData, checkBodyFormat } = require('../utils/utilFuncs');
 //simplify below and make more rigorous testing in line with what ant said
+
+
 
 describe('formatArticleData()', () => {
     it('returns a new empty array when given an empty array', () => {
@@ -67,6 +69,8 @@ describe('formatArticleData()', () => {
         expect(formatArticleData(actual)).to.eql(expected);
     });
 });
+
+
 
 describe('formatCommentData()', () => {
     it('returns a new empty array when given two empty arrays', () => {
@@ -164,5 +168,17 @@ describe('formatCommentData()', () => {
         ];
 
         expect(actual).to.eql(expected);   
+    });
+});
+
+
+
+describe('checkBodyFormat()', () => {
+    it('returns true when object is in correct format', () => {
+        expect(checkBodyFormat({ username: "username", body: "Comment!" })).to.equal(true);
+    });
+    it('returns false when object is in incorrect format', () => {
+        expect(checkBodyFormat({ body: "Comment!" })).to.equal(false);
+        expect(checkBodyFormat({ body: "Comment!", username: "username" })).to.equal(false);
     });
 });
