@@ -1,4 +1,4 @@
-const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle, addArticle } = require('../models/articles');
+const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle, addArticle, deleteArticle } = require('../models/articles');
 const { checkTopic } = require('../models/topics');
 const { checkUser } = require('../models/users');
 const { checkCommentBodyFormat, checkArticleBodyFormat } = require('../../utils/utilFuncs');
@@ -88,4 +88,14 @@ function sendAddedArticle (req, res, next) {
     } else Promise.reject({code: 400}).catch(next);
 };
 
-module.exports = { sendArticles, sendArticleByID, sendCommentsByArticleID, sendUpdatedArticle, sendPostedComment, sendAddedArticle };
+function confirmDeletedArticle (req, res, next) {
+    checkArticle(req.params.article_id)
+    .then(([article]) => {
+        if (article) {
+            deleteArticle(req.params.article_id)
+            .then(() => res.status(204).send());
+        } else Promise.reject({code: 404}).catch(next);
+    }).catch(next);
+};
+
+module.exports = { sendArticles, sendArticleByID, sendCommentsByArticleID, sendUpdatedArticle, sendPostedComment, sendAddedArticle, confirmDeletedArticle };

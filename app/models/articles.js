@@ -64,4 +64,10 @@ function addArticle (articleInfo) {
     .returning('*');
 };
 
-module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle, addArticle };
+function deleteArticle (article_id) {
+    return connection('articles')
+    .where('article_id', article_id)
+    .del('*');
+};
+
+module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle, addArticle, deleteArticle };

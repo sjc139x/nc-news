@@ -102,12 +102,12 @@ describe('homepage', () => {
                 });
             });
 
-            xit('(GET // 200) allows client to sort articles by any column (defaults to date)', () => {
+            it('(GET // 200) allows client to sort articles by any column (defaults to date)', () => {
                 return request(app)
                 .get('/api/articles?sort_by=title')
                 .expect(200)
                 .then(response => {
-                    expect(response.body.articles[12].title).to.equal('A');
+                    expect(response.body.articles[9].title).to.equal('Eight pug gifs that remind me of mitch');
                     expect(response.body.articles[0].title).to.equal('Z');
                 });
             });
@@ -222,6 +222,15 @@ describe('homepage', () => {
                     .then(response => {
                         expect(response.body.article).to.be.an('object');
                         expect(response.body.article).to.have.all.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at');
+                    });
+                });
+
+                it('(DELETE // 204) allows client to delete a specified article', () => {
+                    return request(app)
+                    .delete('/api/articles/4')
+                    .expect(204)
+                    .then(response => {
+                        expect(response.body).to.eql({});
                     });
                 });
 
@@ -406,6 +415,24 @@ describe('homepage', () => {
                     });
                 });
 
+                it('(DELETE // 404) sends 404 when delete request is well-formed but on a non-existent article', () => {
+                    return request(app)
+                    .delete('/api/articles/10000')
+                    .expect(404)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Resource Not Found');
+                    });
+                });
+
+                it('(DELETE // 400) sends 400 when delete request endpoint is ill-formed', () => {
+                    return request(app)
+                    .delete('/api/articles/dog')
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request');
+                    });
+                });
+
             });
 
         });
@@ -545,7 +572,7 @@ describe('homepage', () => {
                         .expect(204)
                         .then(response => {
                             expect(response.body).to.eql({});
-                        })
+                        });
                     });
 
                     describe('ERRORS: /api/comments', () => {
