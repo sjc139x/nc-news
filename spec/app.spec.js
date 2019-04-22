@@ -165,7 +165,7 @@ describe('homepage', () => {
             
             describe('ERRORS: /api/articles', () => {
 
-                it('(GET // 400)', () => {
+                it('(GET // 400) sends 400 when client trying to sort by column that does not exist', () => {
                     return request(app)
                     .get('/api/articles?sort_by=abc')
                     .expect(400)
@@ -174,7 +174,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 400)', () => {
+                it('(GET // 400) sends 400 when client trying to order by column that does not exist', () => {
                     return request(app)
                     .get('/api/articles?order=abc')
                     .expect(400)
@@ -183,7 +183,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 404)', () => {
+                it('(GET // 404) sends 404 when client trying to filter by unregistered user', () => {
                     return request(app)
                     .get('/api/articles?author=me')
                     .expect(404)
@@ -192,7 +192,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 404)', () => {
+                it('(GET // 404) sends 404 when client trying to filter by topic not in database', () => {
                     return request(app)
                     .get('/api/articles?topic=beingMe')
                     .expect(404)
@@ -201,7 +201,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 204)', () => {
+                it('(GET // 204) sends 204 when author exists but does not have any associated articles', () => {
                     return request(app)
                     .get('/api/articles?author=samC')
                     .expect(204)
@@ -210,7 +210,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 204)', () => {
+                it('(GET // 204) sends 204 when topic exists but does not have any associated articles', () => {
                     return request(app)
                     .get('/api/articles?topic=dogs')
                     .expect(204)
@@ -219,7 +219,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 404)', () => {
+                it('(GET // 404) sends 404 when client makes a well-formed but non-existent article request', () => {
                     return request(app)
                     .get('/api/articles/10000')
                     .expect(404)
@@ -228,7 +228,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 404)', () => {
+                it('(GET // 404) sends 404 when client makes a well-formed but non-existent article comment request', () => {
                     return request(app)
                     .get('/api/articles/10000/comments')
                     .expect(404)
@@ -237,7 +237,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 204)', () => {
+                it('(GET // 204) sends 204 when article exists but has no associated comments', () => {
                     return request(app)
                     .get('/api/articles/13/comments')
                     .expect(204)
@@ -246,7 +246,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(PATCH // 405)', () => {
+                it('(PATCH // 405) denies client ability to alter articles', () => {
                     return request(app)
                     .patch('/api/articles')
                     .expect(405)
@@ -255,7 +255,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(PUT // 405)', () => {
+                it('(PUT // 405) denies client ability to replace entire articles', () => {
                     return request(app)
                     .put('/api/articles/2')
                     .expect(405)
@@ -264,7 +264,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(PUT // 405)', () => {
+                it('(PUT // 405) denies client ability to replace comments', () => {
                     return request(app)
                     .put('/api/articles/2/comments')
                     .expect(405)
@@ -273,7 +273,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(POST // 404)', () => {
+                it('(POST // 404) sends 404 when post request is well-formed but regards a non-existent article', () => {
                     return request(app)
                     .post('/api/articles/10000/comments')
                     .send({ username: "butter_bridge", body: "I'm nearly finished with my project and I'm so glad!" })
@@ -283,7 +283,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(POST // 400)', () => {
+                it('(POST // 400) sends 400 when post request is poorly formed but regards an existent article', () => {
                     return request(app)
                     .post('/api/articles/1/comments')
                     .send({ body: "I'm nearly finished with my project and I'm so glad!" })
@@ -293,7 +293,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(POST // 400)', () => {
+                it('(POST // 400) sends 400 when username in body is not a registered user', () => {
                     return request(app)
                     .post('/api/articles/1/comments')
                     .send({ username: "not-a-username", body: "I'm nearly finished with my project and I'm so glad!" })
@@ -303,7 +303,7 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(PATCH // 400)', () => {
+                it('(PATCH // 400) sends 400 when request body for vote incrementor is poorly formed', () => {
                     return request(app)
                     .patch('/api/articles/1')
                     .send({ inc_votes : "dog" })
@@ -331,7 +331,7 @@ describe('homepage', () => {
 
                     describe('ERRORS: /api/users', () => {
 
-                        it('(GET // 404)', () => {
+                        it('(GET // 404) sends a 404 when user is not registered', () => {
                             return request(app)
                             .get('/api/users/not-a-username')
                             .expect(404)
@@ -340,7 +340,7 @@ describe('homepage', () => {
                             });
                         });
                         
-                        it('(PUT // 405)', () => {
+                        it('(PUT // 405) sends 405 when client tries to replace an entire user', () => {
                             return request(app)
                             .put('/api/users/icellusedkars')
                             .expect(405)
@@ -388,7 +388,7 @@ describe('homepage', () => {
 
                     describe('ERRORS: /api/comments', () => {
 
-                        it('(PUT // 405)', () => {
+                        it('(PUT // 405) sends 405 when client tries to replace entire comment', () => {
                             return request(app)
                             .put('/api/comments/5')
                             .expect(405)
@@ -397,7 +397,7 @@ describe('homepage', () => {
                             });
                         });
 
-                        it('(PATCH // 404)', () => {
+                        it('(PATCH // 404) sends 404 when patch request is well-formed but on a non-existent comment', () => {
                             return request(app)
                             .patch('/api/comments/10000')
                             .send({ inc_votes : 10 })
@@ -407,7 +407,7 @@ describe('homepage', () => {
                             });
                         });
 
-                        it('(DELETE // 404)', () => {
+                        it('(DELETE // 404) sends 404 when delete request is well-formed but on a non-existent comment', () => {
                             return request(app)
                             .delete('/api/comments/10000')
                             .expect(404)
@@ -416,7 +416,7 @@ describe('homepage', () => {
                             });
                         });
 
-                        it('(PATCH // 400)', () => {
+                        it('(PATCH // 400) sends 400 when request body is ill-formed', () => {
                             return request(app)
                             .patch('/api/comments/1')
                             .send({ inc_votes : "dog" })
@@ -426,7 +426,7 @@ describe('homepage', () => {
                             });
                         });
 
-                        it('(PATCH // 400)', () => {
+                        it('(PATCH // 400) sends 400 when request body is well-formed but endpoint is not', () => {
                             return request(app)
                             .patch('/api/comments/dog')
                             .send({ inc_votes : 1 })
@@ -436,7 +436,7 @@ describe('homepage', () => {
                             });
                         });
 
-                        it('(DELETE // 400)', () => {
+                        it('(DELETE // 400) sends 400 when delete request endpoint is ill-formed', () => {
                             return request(app)
                             .delete('/api/comments/dog')
                             .expect(400)
@@ -453,7 +453,7 @@ describe('homepage', () => {
 
                     describe('ERRORS: /api', () => {
 
-                        it('(DELETE // 405)', () => {
+                        it('(DELETE // 405) denies client ability to delete entire endpoint', () => {
                             return request(app)
                             .delete('/api')
                             .expect(405)
