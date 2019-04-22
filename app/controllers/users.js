@@ -1,4 +1,10 @@
-const { fetchUserByID, checkUser } = require('../models/users');
+const { fetchUsers, fetchUserByID, checkUser } = require('../models/users');
+
+function sendUsers (req, res, next) {
+    fetchUsers()
+    .then(users => res.status(200).send({ users }))
+    .catch(next);
+};
 
 function sendUserByID (req, res, next) {
     checkUser(req.params.username)
@@ -13,4 +19,4 @@ function sendUserByID (req, res, next) {
     });
 };
 
-module.exports = sendUserByID;
+module.exports = { sendUsers, sendUserByID };

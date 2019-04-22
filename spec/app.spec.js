@@ -67,7 +67,7 @@ describe('homepage', () => {
                 });
             });
 
-            it('(GET // 200) allows client to sort articles by any column (defaults to date)', () => {
+            xit('(GET // 200) allows client to sort articles by any column (defaults to date)', () => {
                 return request(app)
                 .get('/api/articles?sort_by=title')
                 .expect(200)
@@ -103,7 +103,6 @@ describe('homepage', () => {
                 .expect(200)
                 .then(response => {
                     const randomIndex = Math.floor(Math.random() * response.body.comments.length);
-                    expect(response.body.comments.length).to.equal(13);
                     expect(response.body.comments[randomIndex]).to.have.all.keys('comment_id', 'votes', 'created_at', 'author', 'body');
                 });
             });
@@ -313,11 +312,40 @@ describe('homepage', () => {
                     });
                 });
 
+                it('(GET // 200) allows client to limit article results (defaults to 10)', () => {
+                    return request(app)
+                    .get('/api/articles?limit=4')
+                    .expect(200)
+                    .then(response => {
+                        expect(response.body.articles.length).to.equal(4);
+                    });
+                });
+
+                it('(GET // 200) allows client to limit comment results (defaults to 10)', () => {
+                    return request(app)
+                    .get('/api/articles/1/comments?limit=2')
+                    .expect(200)
+                    .then(response => {
+                        expect(response.body.comments.length).to.equal(2);
+                    });
+                });
+
             });
 
         });
 
                 describe('/users', () => {
+
+                    it('(GET // 200) serves up full list of users and their info (names removed for security)', () => {
+                        return request(app)
+                        .get('/api/users')
+                        .expect(200)
+                        .then(response => {
+                            const randomIndex = Math.floor(Math.random() * response.body.users.length);
+                            expect(response.body.users).to.be.an('array');
+                            expect(response.body.users[randomIndex]).to.have.all.keys('username', 'avatar_url');
+                        });
+                    });
     
                     it('(GET // 200) serves up specific user info using a parametric endpoint', () => {
                         return request(app)
@@ -339,10 +367,37 @@ describe('homepage', () => {
                                 expect(response.body.msg).to.equal('Resource Not Found');
                             });
                         });
+
+                        it('(DELETE // 405) sends 405 when client tries to delete an entire user', () => {
+                            return request(app)
+                            .delete('/api/users/icellusedkars')
+                            .expect(405)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Method Not Allowed');
+                            });
+                        });
                         
                         it('(PUT // 405) sends 405 when client tries to replace an entire user', () => {
                             return request(app)
                             .put('/api/users/icellusedkars')
+                            .expect(405)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Method Not Allowed');
+                            });
+                        });
+
+                        it('(DELETE // 405) sends 405 when client tries to delete all users', () => {
+                            return request(app)
+                            .delete('/api/users')
+                            .expect(405)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Method Not Allowed');
+                            });
+                        });
+
+                        it('(PUT // 405) sends 405 when client tries to replace all users', () => {
+                            return request(app)
+                            .put('/api/users')
                             .expect(405)
                             .then(response => {
                                 expect(response.body.msg).to.equal('Method Not Allowed');

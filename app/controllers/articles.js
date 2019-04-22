@@ -41,17 +41,32 @@ function sendArticleByID (req, res, next) {
 };
 
 function sendCommentsByArticleID (req, res, next) {
-    fetchCommentsByArticleID({ ...req.params, ...req.query })
-    .then(comments => {
-        if ((comments.length === 0) && req.params.article_id) {
-            checkArticle(req.params.article_id).then(([article_id]) => {
-                if (article_id) res.status(204).send();
-                else Promise.reject({code: 404}).catch(next);
-            });
-        }
-        else res.status(200).send({ comments });
-    })
-    .catch(next);
+    checkArticle(req.params.article_id)
+    .then(([article_id]) => {
+        if (article_id) {
+            fetchCommentsByArticleID({ ...req.params, ...req.query })
+            .then(comments => {
+    
+                if (comments.length !== 0) return res.status(200).send({ comments });
+                else return res.status(204).send();
+
+            }).catch(next);
+
+        } else Promise.reject({code: 404}).catch(next);
+    }).catch(next);
+
+
+    // fetchCommentsByArticleID({ ...req.params, ...req.query })
+    // .then(comments => {
+    //     if ((comments.length === 0) && req.params.article_id) {
+    //         checkArticle(req.params.article_id).then(([article_id]) => {
+    //             if (article_id) res.status(204).send();
+    //             else Promise.reject({code: 404}).catch(next);
+    //         });
+    //     }
+    //     else res.status(200).send({ comments });
+    // })
+    // .catch(next);
 };
 
 function sendUpdatedArticle (req, res, next) {

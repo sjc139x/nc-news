@@ -1,6 +1,6 @@
 const connection = require('../../db/connection');
 
-function fetchArticles ({ author, topic, sort_by, order }) {
+function fetchArticles ({ author, topic, sort_by, order, limit }) {
     return connection
     .select('articles.author', 'articles.title', 'articles.article_id', 'articles.topic', 'articles.created_at', 'articles.votes')
     .from('articles')
@@ -11,7 +11,8 @@ function fetchArticles ({ author, topic, sort_by, order }) {
     .modify(query => {
         if (author) query.where({ 'articles.author': author });
         if (topic) query.where({ topic });
-    });
+    })
+    .limit(limit || 10);
 };
 
 function fetchArticleByID ({ article_id }) {
@@ -23,12 +24,13 @@ function fetchArticleByID ({ article_id }) {
     });
 };
 
-function fetchCommentsByArticleID({ article_id, sort_by, order }) {
+function fetchCommentsByArticleID({ article_id, sort_by, order, limit }) {
     return connection
     .select('comment_id', 'votes', 'created_at', 'author', 'body')
     .from('comments')
     .where('article_id', article_id)
     .orderBy(sort_by || 'created_at', order || 'desc')
+    .limit(limit || 10);
 };
 
 function updateArticle ({ article_id, inc_votes }) {

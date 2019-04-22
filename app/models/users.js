@@ -1,10 +1,16 @@
 const connection = require('../../db/connection');
 
+function fetchUsers () {
+    return connection
+    .select('username', 'avatar_url')
+    .from('users');
+};
+
 function fetchUserByID ({ username }) {
     return connection
     .select('username', 'avatar_url', 'name')
     .from('users')
-    .where('username', username)
+    .where('username', username);
 };
 
 function checkUser (username) {
@@ -17,4 +23,4 @@ function checkUser (username) {
     });
 };
 
-module.exports = { fetchUserByID, checkUser };
+module.exports = { fetchUsers, fetchUserByID, checkUser };
