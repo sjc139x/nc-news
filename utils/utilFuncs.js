@@ -41,9 +41,14 @@ function formatCommentData (commentArr, articleArr) {
     }
 };
 
-function checkBodyFormat (body) {
+function checkCommentBodyFormat (body) {
     if (Object.keys(body).toString() === [ 'username', 'body' ].toString()) return true;
     else return false;
 };
 
-module.exports = { formatArticleData, formatCommentData, checkBodyFormat };
+function checkVotesBodyFormat (body) {
+    if (typeof Object.values(body)[0] === 'number') return true;
+    else return false;
+};
+
+module.exports = { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat };

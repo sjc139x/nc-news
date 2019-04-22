@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { formatArticleData, formatCommentData, checkBodyFormat } = require('../utils/utilFuncs');
+const { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat } = require('../utils/utilFuncs');
 //simplify below and make more rigorous testing in line with what ant said
 
 
@@ -173,12 +173,23 @@ describe('formatCommentData()', () => {
 
 
 
-describe('checkBodyFormat()', () => {
+describe('checkCommentBodyFormat()', () => {
     it('returns true when object is in correct format', () => {
-        expect(checkBodyFormat({ username: "username", body: "Comment!" })).to.equal(true);
+        expect(checkCommentBodyFormat({ username: "username", body: "Comment!" })).to.equal(true);
     });
     it('returns false when object is in incorrect format', () => {
-        expect(checkBodyFormat({ body: "Comment!" })).to.equal(false);
-        expect(checkBodyFormat({ body: "Comment!", username: "username" })).to.equal(false);
+        expect(checkCommentBodyFormat({ body: "Comment!" })).to.equal(false);
+        expect(checkCommentBodyFormat({ body: "Comment!", username: "username" })).to.equal(false);
+    });
+});
+
+
+
+describe('checkVotesBodyFormat()', () => {
+    it('returns true when object is in correct format', () => {
+        expect(checkVotesBodyFormat({ inc_votes: 5 })).to.equal(true);
+    });
+    it('returns false when object is in incorrect format', () => {
+        expect(checkVotesBodyFormat({ inc_votes: "dog" })).to.equal(false);
     });
 });

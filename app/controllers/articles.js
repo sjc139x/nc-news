@@ -1,7 +1,7 @@
 const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle } = require('../models/articles');
 const { checkTopic } = require('../models/topics');
 const { checkUser } = require('../models/users');
-const { checkBodyFormat } = require('../../utils/utilFuncs');
+const { checkCommentBodyFormat } = require('../../utils/utilFuncs');
 
 function sendArticles (req, res, next) {
     fetchArticles(req.query)
@@ -29,11 +29,15 @@ function sendArticles (req, res, next) {
 };
 
 function sendArticleByID (req, res, next) {
-    fetchArticleByID(req.params)
-    .then(([articles]) => {
-        res.status(200).send({ articles });
-    })
-    .catch(next);
+    checkArticle(req.params.article_id)
+    .then(([response]) => {
+        if (response) {
+            fetchArticleByID(req.params)
+            .then(([articles]) => {
+                res.status(200).send({ articles });
+            });
+        } else Promise.reject({code: 404}).catch(next);
+    });
 };
 
 function sendCommentsByArticleID (req, res, next) {
@@ -51,27 +55,27 @@ function sendCommentsByArticleID (req, res, next) {
 };
 
 function sendUpdatedArticle (req, res, next) {
-    updateArticle({ ...req.params, ...req.body })
-    .then(([article]) => {
-        res.status(200).send({ article });
-    })
-    .catch(next);
+        updateArticle({ ...req.params, ...req.body })
+        .then(([article]) => {
+            res.status(200).send({ article });
+        })
+        .catch(next);
 };
 
 function sendPostedComment (req, res, next) {
-    checkArticle(req.params.article_id)
-    .then(([article_id]) => {
-        if (article_id) {
-            if (checkBodyFormat(req.body)) {
+    Promise.all([checkArticle(req.params.article_id), checkUser(req.body.username || 'no-username-given'), checkCommentBodyFormat(req.body)])
+    .then(([[article], [user], checkFormat]) => {
+        if (article) {
+            if (user && checkFormat) {
                 postComment([ req.params, req.body ])
                 .then(([comment]) => {
-                    res.status(201).send({ comment });
+                    return res.status(201).send({ comment });
                 })
+                .catch(next);
             } else Promise.reject({code: 400}).catch(next);
-        }
-        else Promise.reject({code: 404}).catch(next);
-    })
-    .catch(next);
+        } else Promise.reject({code: 404}).catch(next);
+    }).catch(next);
 };
+
 
 module.exports = { sendArticles, sendArticleByID, sendCommentsByArticleID, sendUpdatedArticle, sendPostedComment };

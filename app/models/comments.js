@@ -13,4 +13,14 @@ function deleteComment({ comment_id }) {
     .del('*')
 };
 
-module.exports = { updateComment, deleteComment };
+function checkComment (comment_id) {
+    return connection
+    .select('comment_id')
+    .from('comments')
+    .where('comment_id', comment_id)
+    .then((res) => {
+        return res;
+    });
+};
+
+module.exports = { updateComment, deleteComment, checkComment };

@@ -72,7 +72,7 @@ describe('homepage', () => {
                 .get('/api/articles?sort_by=title')
                 .expect(200)
                 .then(response => {
-                    expect(response.body.articles[11].title).to.equal('A');
+                    expect(response.body.articles[12].title).to.equal('A');
                     expect(response.body.articles[0].title).to.equal('Z');
                 });
             });
@@ -221,10 +221,28 @@ describe('homepage', () => {
 
                 it('(GET // 404)', () => {
                     return request(app)
+                    .get('/api/articles/10000')
+                    .expect(404)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Resource Not Found');
+                    });
+                });
+
+                it('(GET // 404)', () => {
+                    return request(app)
                     .get('/api/articles/10000/comments')
                     .expect(404)
                     .then(response => {
                         expect(response.body.msg).to.equal('Resource Not Found');
+                    });
+                });
+
+                it('(GET // 204)', () => {
+                    return request(app)
+                    .get('/api/articles/13/comments')
+                    .expect(204)
+                    .then(response => {
+                        expect(response.body).to.eql({});
                     });
                 });
 
@@ -275,6 +293,26 @@ describe('homepage', () => {
                     });
                 });
 
+                it('(POST // 400)', () => {
+                    return request(app)
+                    .post('/api/articles/1/comments')
+                    .send({ username: "not-a-username", body: "I'm nearly finished with my project and I'm so glad!" })
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request');
+                    });
+                });
+
+                it('(PATCH // 400)', () => {
+                    return request(app)
+                    .patch('/api/articles/1')
+                    .send({ inc_votes : "dog" })
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request');
+                    });
+                });
+
             });
 
         });
@@ -293,6 +331,15 @@ describe('homepage', () => {
 
                     describe('ERRORS: /api/users', () => {
 
+                        it('(GET // 404)', () => {
+                            return request(app)
+                            .get('/api/users/not-a-username')
+                            .expect(404)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Resource Not Found');
+                            });
+                        });
+                        
                         it('(PUT // 405)', () => {
                             return request(app)
                             .put('/api/users/icellusedkars')
@@ -350,6 +397,35 @@ describe('homepage', () => {
                             });
                         });
 
+                        it('(PATCH // 404)', () => {
+                            return request(app)
+                            .patch('/api/comments/10000')
+                            .send({ inc_votes : 10 })
+                            .expect(404)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Resource Not Found');
+                            });
+                        });
+
+                        it('(DELETE // 404)', () => {
+                            return request(app)
+                            .delete('/api/comments/10000')
+                            .expect(404)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Resource Not Found');
+                            });
+                        });
+
+                        it('(PATCH // 400)', () => {
+                            return request(app)
+                            .patch('/api/comments/1')
+                            .send({ inc_votes : "dog" })
+                            .expect(400)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Bad Request');
+                            });
+                        });
+                       
                     });
         
                 });
