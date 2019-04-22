@@ -9,7 +9,7 @@ function sendUpdatedComment (req, res, next) {
                 updateComment({ ...req.params, ...req.body })
                 .then(([comment]) => res.status(200).send({ comment }));
             } else Promise.reject({code: 404}).catch(next);
-        });
+        }).catch(next);
     } else Promise.reject({code: 400}).catch(next);
 };
 
@@ -20,7 +20,7 @@ function confirmDeletedComment (req, res, next) {
             deleteComment(req.params)
             .then(() => res.status(204).send());
         } else Promise.reject({code: 404}).catch(next);
-    });  
+    }).catch(next);
 };
 
 module.exports = { sendUpdatedComment, confirmDeletedComment };

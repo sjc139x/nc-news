@@ -425,6 +425,25 @@ describe('homepage', () => {
                                 expect(response.body.msg).to.equal('Bad Request');
                             });
                         });
+
+                        it('(PATCH // 400)', () => {
+                            return request(app)
+                            .patch('/api/comments/dog')
+                            .send({ inc_votes : 1 })
+                            .expect(400)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Bad Request');
+                            });
+                        });
+
+                        it('(DELETE // 400)', () => {
+                            return request(app)
+                            .delete('/api/comments/dog')
+                            .expect(400)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Bad Request');
+                            });
+                        });
                        
                     });
         
