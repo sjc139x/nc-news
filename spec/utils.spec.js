@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat, checkUserBodyFormat, checkTopicBodyFormat } = require('../utils/utilFuncs');
+const { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat, checkUserBodyFormat, checkTopicBodyFormat, checkArticleBodyFormat } = require('../utils/utilFuncs');
 //simplify below and make more rigorous testing in line with what ant said
 
 
@@ -217,5 +217,17 @@ describe('checkTopicBodyFormat()', () => {
     it('returns false when object is in incorrect format', () => {
         expect(checkTopicBodyFormat({ slug: "", description: "wat is" })).to.equal(false);
         expect(checkTopicBodyFormat({ description: "?????" })).to.equal(false);
+    });
+});
+
+
+
+describe('checkArticleBodyFormat()', () => {
+    it('returns true when object is in correct format', () => {
+        expect(checkArticleBodyFormat({ title: "why music sucks", body: "it does not suck", author: "paddyB", topic: "music" })).to.equal(true);
+    });
+    it('returns false when object is in incorrect format', () => {
+        expect(checkArticleBodyFormat({ title: "why music sucks", body: "it does not suck", author: "", topic: "music" })).to.equal(false);
+        expect(checkArticleBodyFormat({ body: "it does not suck", author: "paddyB" })).to.equal(false);
     });
 });

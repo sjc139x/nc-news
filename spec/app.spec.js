@@ -196,6 +196,35 @@ describe('homepage', () => {
                 });
             });
 
+            it('(GET // 200) allows client to limit article results (defaults to 10)', () => {
+                    return request(app)
+                    .get('/api/articles?limit=4')
+                    .expect(200)
+                    .then(response => {
+                        expect(response.body.articles.length).to.equal(4);
+                    });
+                });
+
+                it('(GET // 200) allows client to limit comment results (defaults to 10)', () => {
+                    return request(app)
+                    .get('/api/articles/1/comments?limit=2')
+                    .expect(200)
+                    .then(response => {
+                        expect(response.body.comments.length).to.equal(2);
+                    });
+                });
+
+                it('(POST // 201) allows client to add a new article', () => {
+                    return request(app)
+                    .post('/api/articles')
+                    .send({ title: "meow", body: "cats go meow", author: "butter_bridge", topic: "cats" })
+                    .expect(201)
+                    .then(response => {
+                        expect(response.body.article).to.be.an('object');
+                        expect(response.body.article).to.have.all.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at');
+                    });
+                });
+
             
             describe('ERRORS: /api/articles', () => {
 
@@ -347,21 +376,33 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 200) allows client to limit article results (defaults to 10)', () => {
+                it('(POST // 400) sends 400 when request body is ill-formed (i.e. missing title/body/author/topic keys OR values)', () => {
                     return request(app)
-                    .get('/api/articles?limit=4')
-                    .expect(200)
+                    .post('/api/articles')
+                    .send({ title: "woof", body: "dogs go woof", author: "", topic: "dogs" })
+                    .expect(400)
                     .then(response => {
-                        expect(response.body.articles.length).to.equal(4);
+                        expect(response.body.msg).to.equal('Bad Request');
                     });
                 });
 
-                it('(GET // 200) allows client to limit comment results (defaults to 10)', () => {
+                it('(POST // 422) sends 422 when author is NOT in database', () => {
                     return request(app)
-                    .get('/api/articles/1/comments?limit=2')
-                    .expect(200)
+                    .post('/api/articles')
+                    .send({ title: "ideas", body: "i am running out of ideas for test articles", author: "not-a-username", topic: "coding" })
+                    .expect(422)
                     .then(response => {
-                        expect(response.body.comments.length).to.equal(2);
+                        expect(response.body.msg).to.equal('Unprocessable Entity');                        
+                    });
+                });
+
+                it('(POST // 422) sends 422 when topic is NOT in database', () => {
+                    return request(app)
+                    .post('/api/articles')
+                    .send({ title: "ideas", body: "i am running out of ideas for test articles", author: "rogersop", topic: "not-a-topic" })
+                    .expect(422)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Unprocessable Entity');                        
                     });
                 });
 

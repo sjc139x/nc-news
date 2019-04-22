@@ -1,7 +1,7 @@
-const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle } = require('../models/articles');
+const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle, addArticle } = require('../models/articles');
 const { checkTopic } = require('../models/topics');
 const { checkUser } = require('../models/users');
-const { checkCommentBodyFormat } = require('../../utils/utilFuncs');
+const { checkCommentBodyFormat, checkArticleBodyFormat } = require('../../utils/utilFuncs');
 
 function sendArticles (req, res, next) {
     fetchArticles(req.query)
@@ -54,19 +54,6 @@ function sendCommentsByArticleID (req, res, next) {
 
         } else Promise.reject({code: 404}).catch(next);
     }).catch(next);
-
-
-    // fetchCommentsByArticleID({ ...req.params, ...req.query })
-    // .then(comments => {
-    //     if ((comments.length === 0) && req.params.article_id) {
-    //         checkArticle(req.params.article_id).then(([article_id]) => {
-    //             if (article_id) res.status(204).send();
-    //             else Promise.reject({code: 404}).catch(next);
-    //         });
-    //     }
-    //     else res.status(200).send({ comments });
-    // })
-    // .catch(next);
 };
 
 function sendUpdatedArticle (req, res, next) {
@@ -92,5 +79,13 @@ function sendPostedComment (req, res, next) {
     }).catch(next);
 };
 
+function sendAddedArticle (req, res, next) {
+    if (checkArticleBodyFormat(req.body)) {
+        addArticle(req.body)
+        .then(([article]) => {
+            return res.status(201).send({ article });
+        }).catch(next);
+    } else Promise.reject({code: 400}).catch(next);
+};
 
-module.exports = { sendArticles, sendArticleByID, sendCommentsByArticleID, sendUpdatedArticle, sendPostedComment };
+module.exports = { sendArticles, sendArticleByID, sendCommentsByArticleID, sendUpdatedArticle, sendPostedComment, sendAddedArticle };

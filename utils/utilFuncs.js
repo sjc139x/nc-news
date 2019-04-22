@@ -73,4 +73,9 @@ function checkTopicBodyFormat (body) {
 
 
 
-module.exports = { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat, checkUserBodyFormat, checkTopicBodyFormat };
+function checkArticleBodyFormat (body) {
+    if ((Object.keys(body).toString() === [ 'title', 'body', 'author', 'topic' ].toString()) && (body.title !== '') && (body.body !== '') && (body.author !== '') && (body.topic !== '')) return true;
+    else return false;
+};
+
+module.exports = { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat, checkUserBodyFormat, checkTopicBodyFormat, checkArticleBodyFormat };

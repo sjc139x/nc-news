@@ -57,4 +57,11 @@ function checkArticle (article_id) {
     });
 };
 
-module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle };
+function addArticle (articleInfo) {
+    return connection
+    .insert({title: articleInfo.title, body: articleInfo.body, author: articleInfo.author, topic: articleInfo.topic })
+    .into('articles')
+    .returning('*');
+};
+
+module.exports = { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle, addArticle };
