@@ -51,4 +51,9 @@ function checkVotesBodyFormat (body) {
     else return false;
 };
 
-module.exports = { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat };
+function checkUserBodyFormat (body) {
+    if ((Object.keys(body).toString() === [ 'username', 'name', 'avatar_url' ].toString()) && (body.username !== '')) return true;
+    else return false;
+};
+
+module.exports = { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat, checkUserBodyFormat };

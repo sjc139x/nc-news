@@ -357,6 +357,17 @@ describe('homepage', () => {
                         });
                     });
 
+                    it('(POST // 201) allows a new user to register/be added to DB', () => {
+                        return request(app)
+                        .post('/api/users')
+                        .send({ username: "sammyJo", name: "Sam Cockerill", avatar_url: "" })
+                        .expect(201)
+                        .then(response => {
+                            expect(response.body.user).to.be.an('object');
+                            expect(response.body.user).to.have.all.keys('username', 'name', 'avatar_url');
+                        });
+                    });
+
                     describe('ERRORS: /api/users', () => {
 
                         it('(GET // 404) sends a 404 when user is not registered', () => {
@@ -401,6 +412,26 @@ describe('homepage', () => {
                             .expect(405)
                             .then(response => {
                                 expect(response.body.msg).to.equal('Method Not Allowed');
+                            });
+                        });
+
+                        it('(POST // 400) sends 400 when request body is ill-formed (i.e. missing username on sign-up)', () => {
+                            return request(app)
+                            .post('/api/users')
+                            .send({ username: "", name: "Brooklyn Heights", avatar_url: "" })
+                            .expect(400)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Bad Request');
+                            });
+                        });
+
+                        it('(POST // 422) sends 422 when username is already in database', () => {
+                            return request(app)
+                            .post('/api/users')
+                            .send({ username: "rogersop", name: "", avatar_url: "" })
+                            .expect(422)
+                            .then(response => {
+                                expect(response.body.msg).to.equal('Unprocessable Entity');
                             });
                         });
 

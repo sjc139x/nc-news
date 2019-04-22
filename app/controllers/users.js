@@ -1,4 +1,5 @@
-const { fetchUsers, fetchUserByID, checkUser } = require('../models/users');
+const { fetchUsers, fetchUserByID, checkUser, addUser } = require('../models/users');
+const { checkUserBodyFormat } = require('../../utils/utilFuncs');
 
 function sendUsers (req, res, next) {
     fetchUsers()
@@ -19,4 +20,16 @@ function sendUserByID (req, res, next) {
     });
 };
 
-module.exports = { sendUsers, sendUserByID };
+function sendAddedUser (req, res, next) {
+    if (checkUserBodyFormat(req.body)) {
+        checkUser(req.body.username)
+        .then(([username]) => {
+            if (!username) {
+                addUser(req.body)
+                .then(([user]) => res.status(201).send({ user })).catch(next);
+            } else Promise.reject({code: 422}).catch(next);
+        }).catch(next);
+    } else Promise.reject({ code: 400 }).catch(next);
+};
+
+module.exports = { sendUsers, sendUserByID, sendAddedUser };

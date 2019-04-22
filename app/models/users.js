@@ -23,4 +23,11 @@ function checkUser (username) {
     });
 };
 
-module.exports = { fetchUsers, fetchUserByID, checkUser };
+function addUser (userInfo) {
+    return connection
+    .insert({username: userInfo.username, name: userInfo.name, avatar_url: userInfo.avatar_url })
+    .into('users')
+    .returning('*');
+};
+
+module.exports = { fetchUsers, fetchUserByID, checkUser, addUser };

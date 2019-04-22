@@ -25,6 +25,10 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+    res.status(422).send({msg: 'Unprocessable Entity'});
+});
+
+app.use((err, req, res, next) => {
     res.status(500).send({msg: 'Internal Sevrer Error'});
 });
 
