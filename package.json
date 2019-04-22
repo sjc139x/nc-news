@@ -10,8 +10,8 @@
     "migrate-rollback": "knex migrate:rollback",
     "seed": "knex seed:run",
     "test": "mocha spec/*.spec.js",
-    "start-server": "nodemon app/listen.js",
-    "start-host": "node app/listen.js"
+    "server": "nodemon app/listen.js",
+    "start": "node app/listen.js"
   },
   "keywords": [],
   "author": "",
