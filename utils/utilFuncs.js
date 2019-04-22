@@ -18,6 +18,8 @@ function formatArticleData (articleArr) {
     };
 };
 
+
+
 function formatCommentData (commentArr, articleArr) {
     if (commentArr.length === 0 || articleArr.length === 0) return [];
     else {
@@ -41,19 +43,34 @@ function formatCommentData (commentArr, articleArr) {
     }
 };
 
+
+
 function checkCommentBodyFormat (body) {
     if (Object.keys(body).toString() === [ 'username', 'body' ].toString()) return true;
     else return false;
 };
+
+
 
 function checkVotesBodyFormat (body) {
     if (typeof Object.values(body)[0] === 'number') return true;
     else return false;
 };
 
+
+
 function checkUserBodyFormat (body) {
     if ((Object.keys(body).toString() === [ 'username', 'name', 'avatar_url' ].toString()) && (body.username !== '')) return true;
     else return false;
 };
 
-module.exports = { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat, checkUserBodyFormat };
+
+
+function checkTopicBodyFormat (body) {
+    if ((Object.keys(body).toString() === [ 'slug', 'description' ].toString()) && (body.slug !== '')) return true;
+    else return false;
+};
+
+
+
+module.exports = { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat, checkUserBodyFormat, checkTopicBodyFormat };

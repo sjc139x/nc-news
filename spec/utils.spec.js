@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat, checkUserBodyFormat } = require('../utils/utilFuncs');
+const { formatArticleData, formatCommentData, checkCommentBodyFormat, checkVotesBodyFormat, checkUserBodyFormat, checkTopicBodyFormat } = require('../utils/utilFuncs');
 //simplify below and make more rigorous testing in line with what ant said
 
 
@@ -204,5 +204,18 @@ describe('checkUserBodyFormat()', () => {
     it('returns false when object is in incorrect format', () => {
         expect(checkUserBodyFormat({ username: "", name: "Me", avatar_url: "https://usercontent1.hubstatic.com/14009216_f1024.jpg" })).to.equal(false);
         expect(checkUserBodyFormat({ name: "Me", avatar_url: "https://usercontent1.hubstatic.com/14009216_f1024.jpg" })).to.equal(false);
+    });
+});
+
+
+
+describe('checkTopicBodyFormat()', () => {
+    it('returns true when object is in correct format', () => {
+        expect(checkTopicBodyFormat({ slug: "music", description: "music sounds good in my ears" })).to.equal(true);
+        expect(checkTopicBodyFormat({ slug: "animals", description: "" })).to.equal(true);
+    });
+    it('returns false when object is in incorrect format', () => {
+        expect(checkTopicBodyFormat({ slug: "", description: "wat is" })).to.equal(false);
+        expect(checkTopicBodyFormat({ description: "?????" })).to.equal(false);
     });
 });

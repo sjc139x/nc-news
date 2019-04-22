@@ -16,4 +16,11 @@ function checkTopic (slug) {
     });
 };
 
-module.exports = { fetchTopics, checkTopic };
+function addTopic (topicInfo) {
+    return connection
+    .insert({ description: topicInfo.description, slug: topicInfo.slug })
+    .into('topics')
+    .returning('*');
+};
+
+module.exports = { fetchTopics, checkTopic, addTopic };

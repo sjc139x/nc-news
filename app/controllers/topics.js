@@ -1,4 +1,5 @@
-const { fetchTopics, checkTopic } = require('../models/topics');
+const { fetchTopics, checkTopic, addTopic } = require('../models/topics');
+const { checkTopicBodyFormat } = require('../../utils/utilFuncs');
 
 function sendTopics (req, res, next) {
     fetchTopics()
@@ -8,4 +9,13 @@ function sendTopics (req, res, next) {
     .catch(next);
 };
 
-module.exports = sendTopics;
+function sendAddedTopic (req, res, next) {
+   if (checkTopicBodyFormat(req.body)) {
+       addTopic(req.body)
+       .then(([topic]) => {
+           return res.status(201).send({ topic });
+       }).catch(next);
+   } else Promise.reject({code: 400}).catch(next);
+};
+
+module.exports = { sendTopics, sendAddedTopic };

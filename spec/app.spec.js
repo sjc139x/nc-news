@@ -30,6 +30,41 @@ describe('homepage', () => {
                 });
             });
 
+            it('(POST // 201) allows a new topic to be added to DB', () => {
+                return request(app)
+                .post('/api/topics')
+                .send({ slug: "space", description: "space is cool and big" })
+                .expect(201)
+                .then(response => {
+                    expect(response.body.topic).to.be.an('object');
+                    expect(response.body.topic).to.have.all.keys('slug', 'description');
+                });
+            });
+
+            describe('ERRORS: /api/topics', () => {
+                
+                it('(POST // 400) sends 400 when request body is ill-formed (no slug value)', () => {
+                    return request(app)
+                    .post('/api/topics')
+                    .send({ slug: "", description: "not a clue" })
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request');
+                    });
+                });
+
+                it('(POST // 422) sends 422 when topic already exists in database', () => {
+                    return request(app)
+                    .post('/api/topics')
+                    .send({ slug: "mitch", description: "is a ledge" })
+                    .expect(422)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Unprocessable Entity');
+                    });
+                });
+
+            });
+
         });
 
         describe('/articles', () => {
