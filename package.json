@@ -1,5 +1,5 @@
 {
-  "name": "NC-News",
+  "name": "nc-news",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,7 +11,10 @@
     "seed": "knex seed:run",
     "test": "mocha spec/*.spec.js",
     "server": "nodemon app/listen.js",
-    "start": "node app/listen.js"
+    "start": "node app/listen.js",
+    "seed:prod": "NODE_ENV=production DB_URL=$(heroku config:get DATABASE_URL) knex seed:run",
+    "migrate:latest:prod": "NODE_ENV=production DB_URL=$(heroku config:get DATABASE_URL) knex migrate:latest",
+    "migrate:rollback:prod": "NODE_ENV=production DB_URL=$(heroku config:get DATABASE_URL) knex migrate:rollback"
   },
   "keywords": [],
   "author": "",

@@ -15,6 +15,12 @@ const data = {
         topicData: testData.topicData,
         articleData: testData.articleData,
         commentData: testData.commentData
+    },
+    production: {
+        userData: devData.userData,
+        topicData: devData.topicData,
+        articleData: devData.articleData,
+        commentData: devData.commentData
     }
 }
 
