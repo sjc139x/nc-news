@@ -9,7 +9,7 @@ function formatArticleData (articleArr) {
                 topic: item.topic,
                 author: item.author,
                 body: item.body,
-                created_at: new Date(item.created_at).toUTCString()
+                created_at: new Date(item.created_at)
             });
 
             return acc;

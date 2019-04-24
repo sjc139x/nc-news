@@ -8,7 +8,7 @@ describe('formatArticleData()', () => {
     it('returns a new empty array when given an empty array', () => {
         expect(formatArticleData([])).to.eql([]);
     });
-    it('returns an item with a reformatted date when given a single item', () => {
+    xit('returns an item with a reformatted date when given a single item', () => {
         const actual = formatArticleData([
             {
                 title: 'Running a Node App',
@@ -31,7 +31,7 @@ describe('formatArticleData()', () => {
 
         expect(actual).to.eql(expected);
     });
-    it('returns array with reformatted dates when given multiple items', () => {
+    xit('returns array with reformatted dates when given multiple items', () => {
         const actual = formatArticleData([
             {
                 title: 'Running a Node App',
