@@ -46,7 +46,7 @@ function formatCommentData (commentArr, articleArr) {
 
 
 function checkCommentBodyFormat (body) {
-    if (Object.keys(body).toString() === [ 'username', 'body' ].toString()) return true;
+    if ((Object.keys(body).toString() === [ 'username', 'body' ].toString()) && (body.username !== '') && (body.body !== '')) return true;
     else return false;
 };
 

@@ -365,13 +365,13 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(POST // 400) sends 400 when username in body is not a registered user', () => {
+                it('(POST // 400) sends 422 when username in body is not a registered user', () => {
                     return request(app)
                     .post('/api/articles/1/comments')
                     .send({ username: "not-a-username", body: "I'm nearly finished with my project and I'm so glad!" })
-                    .expect(400)
+                    .expect(422)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
+                        expect(response.body.msg).to.equal('Unprocessable Entity');
                     });
                 });
 
@@ -639,6 +639,15 @@ describe('homepage', () => {
                 });
 
                 describe('/api', () => {
+
+                    it('(GET // 200) responds with a JSON object describing available API endpoints', () => {
+                        return request(app)
+                        .get('/api')
+                        .expect(200)
+                        .then(response => {
+                            expect(response.headers['content-type']).to.equal('application/json; charset=utf-8');
+                        });
+                    });
 
                     describe('ERRORS: /api', () => {
 

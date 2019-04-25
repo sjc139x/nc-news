@@ -68,12 +68,13 @@ function sendPostedComment (req, res, next) {
     Promise.all([checkArticle(req.params.article_id), checkUser(req.body.username || 'no-username-given'), checkCommentBodyFormat(req.body)])
     .then(([[article], [user], checkFormat]) => {
         if (article) {
-            if (user && checkFormat) {
-                postComment([ req.params, req.body ])
-                .then(([comment]) => {
-                    return res.status(201).send({ comment });
-                })
-                .catch(next);
+            if (checkFormat) {
+                if (user) {
+                    postComment([ req.params, req.body ])
+                    .then(([comment]) => {
+                        return res.status(201).send({ comment });
+                    }).catch(next);
+                } else Promise.reject({code: 422}).catch(next);
             } else Promise.reject({code: 400}).catch(next);
         } else Promise.reject({code: 404}).catch(next);
     }).catch(next);
