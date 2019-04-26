@@ -72,7 +72,7 @@ apiRouter.route('/')
             }
         }
     })})
-.all((req, res, next) => Promise.reject({code: 405}).catch(next));
+.all((req, res, next) => Promise.reject({ code: 405, msg: 'Method Not Allowed: only GET methods are allowed on this route (/api).' }).catch(next));
 
 apiRouter.use('/users', usersRouter);
 apiRouter.use('/topics', topicsRouter);

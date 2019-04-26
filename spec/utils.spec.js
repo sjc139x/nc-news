@@ -200,6 +200,8 @@ describe('checkUserBodyFormat()', () => {
     it('returns true when object is in correct format', () => {
         expect(checkUserBodyFormat({ username: "me", name: "Me", avatar_url: "https://usercontent1.hubstatic.com/14009216_f1024.jpg" })).to.equal(true);
         expect(checkUserBodyFormat({ username: "me", name: "Me", avatar_url: "" })).to.equal(true);
+        expect(checkUserBodyFormat({ username: "me" })).to.equal(true);
+
     });
     it('returns false when object is in incorrect format', () => {
         expect(checkUserBodyFormat({ username: "", name: "Me", avatar_url: "https://usercontent1.hubstatic.com/14009216_f1024.jpg" })).to.equal(false);
@@ -213,6 +215,7 @@ describe('checkTopicBodyFormat()', () => {
     it('returns true when object is in correct format', () => {
         expect(checkTopicBodyFormat({ slug: "music", description: "music sounds good in my ears" })).to.equal(true);
         expect(checkTopicBodyFormat({ slug: "animals", description: "" })).to.equal(true);
+        expect(checkTopicBodyFormat({ slug: "animals" })).to.equal(true);
     });
     it('returns false when object is in incorrect format', () => {
         expect(checkTopicBodyFormat({ slug: "", description: "wat is" })).to.equal(false);

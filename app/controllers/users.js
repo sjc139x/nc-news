@@ -14,7 +14,7 @@ function sendUserByID (req, res, next) {
             fetchUserByID(req.params)
             .then(([user]) => {
                 if (user) res.status(200).send({ user })
-                else Promise.reject({code: 404}).catch(next);
+                else Promise.reject({ code: 404, msg: `Resource Not Found: "${req.params.username}" is not a valid user.` }).catch(next);
             });
         };
     });
@@ -27,9 +27,9 @@ function sendAddedUser (req, res, next) {
             if (!username) {
                 addUser(req.body)
                 .then(([user]) => res.status(201).send({ user })).catch(next);
-            } else Promise.reject({code: 422}).catch(next);
+            } else Promise.reject({ code: 422, msg: `Unprocessable Entity: "${req.body.username}" already exists in the database.` }).catch(next);
         }).catch(next);
-    } else Promise.reject({ code: 400 }).catch(next);
+    } else Promise.reject({ code: 400, msg: 'Bad Request: request body is not in the correct format (username is a required field).' }).catch(next);
 };
 
 module.exports = { sendUsers, sendUserByID, sendAddedUser };

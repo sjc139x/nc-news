@@ -60,14 +60,14 @@ function checkVotesBodyFormat (body) {
 
 
 function checkUserBodyFormat (body) {
-    if ((Object.keys(body).toString() === [ 'username', 'name', 'avatar_url' ].toString()) && (body.username !== '')) return true;
+    if ((Object.keys(body)[0] === 'username') && (body.username !== '')) return true;
     else return false;
 };
 
 
 
 function checkTopicBodyFormat (body) {
-    if ((Object.keys(body).toString() === [ 'slug', 'description' ].toString()) && (body.slug !== '')) return true;
+    if ((Object.keys(body)[0] === 'slug') && (body.slug !== '')) return true;
     else return false;
 };
 

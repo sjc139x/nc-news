@@ -15,7 +15,7 @@ function sendAddedTopic (req, res, next) {
        .then(([topic]) => {
            return res.status(201).send({ topic });
        }).catch(next);
-   } else Promise.reject({code: 400}).catch(next);
+   } else Promise.reject({ code: 400, msg: 'Bad Request: request body is not in the correct format (slug is a required field).' }).catch(next);
 };
 
 module.exports = { sendTopics, sendAddedTopic };

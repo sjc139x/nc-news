@@ -49,7 +49,7 @@ describe('homepage', () => {
                     .send({ slug: "", description: "not a clue" })
                     .expect(400)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
+                        expect(response.body.msg).to.equal('Bad Request: request body is not in the correct format (slug is a required field).');
                     });
                 });
 
@@ -59,7 +59,7 @@ describe('homepage', () => {
                     .send({ slug: "mitch", description: "is a ledge" })
                     .expect(422)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Unprocessable Entity');
+                        expect(response.body.msg).to.equal('Unprocessable Entity: Key (slug)=(mitch) already exists.');
                     });
                 });
 
@@ -197,42 +197,69 @@ describe('homepage', () => {
             });
 
             it('(GET // 200) allows client to limit article results (defaults to 10)', () => {
-                    return request(app)
-                    .get('/api/articles?limit=4')
-                    .expect(200)
-                    .then(response => {
-                        expect(response.body.articles.length).to.equal(4);
-                    });
+                return request(app)
+                .get('/api/articles?limit=4')
+                .expect(200)
+                .then(response => {
+                    expect(response.body.articles.length).to.equal(4);
                 });
+            });
 
-                it('(GET // 200) allows client to limit comment results (defaults to 10)', () => {
-                    return request(app)
-                    .get('/api/articles/1/comments?limit=2')
-                    .expect(200)
-                    .then(response => {
-                        expect(response.body.comments.length).to.equal(2);
-                    });
+            it('(GET // 200) allows client to paginate article results (based on limit)', () => {
+                return request(app)
+                .get('/api/articles?p=2')
+                .expect(200)
+                .then(response => {
+                    expect(response.body.articles.length).to.equal(3);
                 });
+            });
 
-                it('(POST // 201) allows client to add a new article', () => {
-                    return request(app)
-                    .post('/api/articles')
-                    .send({ title: "meow", body: "cats go meow", author: "butter_bridge", topic: "cats" })
-                    .expect(201)
-                    .then(response => {
-                        expect(response.body.article).to.be.an('object');
-                        expect(response.body.article).to.have.all.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at');
-                    });
+            it('(GET // 200) allows client to limit comment results (defaults to 10)', () => {
+                return request(app)
+                .get('/api/articles/1/comments?limit=2')
+                .expect(200)
+                .then(response => {
+                    expect(response.body.comments.length).to.equal(2);
                 });
+            });
 
-                it('(DELETE // 204) allows client to delete a specified article', () => {
-                    return request(app)
-                    .delete('/api/articles/4')
-                    .expect(204)
-                    .then(response => {
-                        expect(response.body).to.eql({});
-                    });
+            it('(GET // 200) allows client to paginate comment results (based on limit)', () => {
+                return request(app)
+                .get('/api/articles/1/comments?p=2')
+                .expect(200)
+                .then(response => {
+                    expect(response.body.comments.length).to.equal(3);
                 });
+            });
+
+            it('(POST // 201) allows client to add a new article', () => {
+                return request(app)
+                .post('/api/articles')
+                .send({ title: "meow", body: "cats go meow", author: "butter_bridge", topic: "cats" })
+                .expect(201)
+                .then(response => {
+                    expect(response.body.article).to.be.an('object');
+                    expect(response.body.article).to.have.all.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at');
+                });
+            });
+
+            it('(DELETE // 204) allows client to delete a specified article', () => {
+                return request(app)
+                .delete('/api/articles/4')
+                .expect(204)
+                .then(response => {
+                    expect(response.body).to.eql({});
+                });
+            });
+
+            xit('(GET // 200) includes a "total_count" prop which counts the articles returned, given queries and ignoring limit', () => {
+                return request(app)
+                .get('/api/articles')
+                .expect(200)
+                .then(response => {
+                   expect(response.body.total_count).to.equal(13);
+                });
+            });
 
             
             describe('ERRORS: /api/articles', () => {
@@ -242,7 +269,7 @@ describe('homepage', () => {
                     .get('/api/articles?sort_by=abc')
                     .expect(400)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
+                        expect(response.body.msg).to.equal('Bad Request: "abc" is not a column in the table, so cannot be used to sort.');
                     });
                 });
 
@@ -251,7 +278,7 @@ describe('homepage', () => {
                     .get('/api/articles?order=abc')
                     .expect(400)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
+                        expect(response.body.msg).to.equal('Bad Request: "abc" is not a valid order.');
                     });
                 });
 
@@ -260,7 +287,7 @@ describe('homepage', () => {
                     .get('/api/articles?author=me')
                     .expect(404)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Resource Not Found');
+                        expect(response.body.msg).to.equal('Resource Not Found: "me" is not a valid author.');
                     });
                 });
 
@@ -269,7 +296,7 @@ describe('homepage', () => {
                     .get('/api/articles?topic=beingMe')
                     .expect(404)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Resource Not Found');
+                        expect(response.body.msg).to.equal('Resource Not Found: "beingMe" is not a valid topic.');
                     });
                 });
 
@@ -296,7 +323,7 @@ describe('homepage', () => {
                     .get('/api/articles/10000')
                     .expect(404)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Resource Not Found');
+                        expect(response.body.msg).to.equal('Resource Not Found: there are no articles with an id of "10000".');
                     });
                 });
 
@@ -305,7 +332,7 @@ describe('homepage', () => {
                     .get('/api/articles/10000/comments')
                     .expect(404)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Resource Not Found');
+                        expect(response.body.msg).to.equal('Resource Not Found: there are no articles (and therefore no comments) with an id of "10000".');
                     });
                 });
 
@@ -323,7 +350,7 @@ describe('homepage', () => {
                     .patch('/api/articles')
                     .expect(405)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Method Not Allowed');
+                        expect(response.body.msg).to.equal('Method Not Allowed: only GET and POST methods are allowed on this route (/api/articles).');
                     });
                 });
 
@@ -332,7 +359,7 @@ describe('homepage', () => {
                     .put('/api/articles/2')
                     .expect(405)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Method Not Allowed');
+                        expect(response.body.msg).to.equal('Method Not Allowed: only GET, PATCH and DELETE methods are allowed on this route (/api/articles/:article_id).');
                     });
                 });
 
@@ -341,7 +368,7 @@ describe('homepage', () => {
                     .put('/api/articles/2/comments')
                     .expect(405)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Method Not Allowed');
+                        expect(response.body.msg).to.equal('Method Not Allowed: only GET and POST methods are allowed on this route (/api/articles/:article_id/comments).');
                     });
                 });
 
@@ -351,7 +378,7 @@ describe('homepage', () => {
                     .send({ username: "butter_bridge", body: "I'm nearly finished with my project and I'm so glad!" })
                     .expect(404)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Resource Not Found');
+                        expect(response.body.msg).to.equal('Resource Not Found: there are no articles with an id of "10000", so comment cannot be posted.');
                     });
                 });
 
@@ -361,17 +388,17 @@ describe('homepage', () => {
                     .send({ body: "I'm nearly finished with my project and I'm so glad!" })
                     .expect(400)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
+                        expect(response.body.msg).to.equal('Bad Request: request body is not in the correct format (username and body are both required fields).');
                     });
                 });
 
-                it('(POST // 400) sends 422 when username in body is not a registered user', () => {
+                it('(POST // 422) sends 422 when username in body is not a registered user', () => {
                     return request(app)
                     .post('/api/articles/1/comments')
                     .send({ username: "not-a-username", body: "I'm nearly finished with my project and I'm so glad!" })
                     .expect(422)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Unprocessable Entity');
+                        expect(response.body.msg).to.equal('Unprocessable Entity: "not-a-username" is not a registered user, and therefore cannot post comments.');
                     });
                 });
 
@@ -381,7 +408,7 @@ describe('homepage', () => {
                     .send({ inc_votes : "dog" })
                     .expect(400)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
+                        expect(response.body.msg).to.equal('Bad Request: "dog" is not a valid value for inc_votes (must be an integer).');
                     });
                 });
 
@@ -391,17 +418,17 @@ describe('homepage', () => {
                     .send({ title: "woof", body: "dogs go woof", author: "", topic: "dogs" })
                     .expect(400)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
+                        expect(response.body.msg).to.equal('Bad Request: request body is not in the correct format (title, body, author & topic are all required fields).');
                     });
                 });
 
                 it('(POST // 422) sends 422 when author is NOT in database', () => {
                     return request(app)
                     .post('/api/articles')
-                    .send({ title: "ideas", body: "i am running out of ideas for test articles", author: "not-a-username", topic: "coding" })
+                    .send({ title: "ideas", body: "i am running out of ideas for test articles", author: "not-a-username", topic: "mitch" })
                     .expect(422)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Unprocessable Entity');                        
+                        expect(response.body.msg).to.equal('Unprocessable Entity: Key (author)=(not-a-username) is not present in table "users".');                        
                     });
                 });
 
@@ -411,7 +438,7 @@ describe('homepage', () => {
                     .send({ title: "ideas", body: "i am running out of ideas for test articles", author: "rogersop", topic: "not-a-topic" })
                     .expect(422)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Unprocessable Entity');                        
+                        expect(response.body.msg).to.equal('Unprocessable Entity: Key (topic)=(not-a-topic) is not present in table "topics".');                        
                     });
                 });
 
@@ -420,7 +447,7 @@ describe('homepage', () => {
                     .delete('/api/articles/10000')
                     .expect(404)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Resource Not Found');
+                        expect(response.body.msg).to.equal('Resource Not Found: there are no articles with an id of "10000".');
                     });
                 });
 
@@ -429,7 +456,7 @@ describe('homepage', () => {
                     .delete('/api/articles/dog')
                     .expect(400)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request');
+                        expect(response.body.msg).to.equal('Bad Request: "dog" is not a valid endpoint (must be an integer).');
                     });
                 });
 
@@ -478,7 +505,7 @@ describe('homepage', () => {
                             .get('/api/users/not-a-username')
                             .expect(404)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Resource Not Found');
+                                expect(response.body.msg).to.equal('Resource Not Found: "not-a-username" is not a valid user.');
                             });
                         });
 
@@ -487,7 +514,7 @@ describe('homepage', () => {
                             .delete('/api/users/icellusedkars')
                             .expect(405)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Method Not Allowed');
+                                expect(response.body.msg).to.equal('Method Not Allowed: only GET methods are allowed on this route (/api/users/:username).');
                             });
                         });
                         
@@ -496,7 +523,7 @@ describe('homepage', () => {
                             .put('/api/users/icellusedkars')
                             .expect(405)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Method Not Allowed');
+                                expect(response.body.msg).to.equal('Method Not Allowed: only GET methods are allowed on this route (/api/users/:username).');
                             });
                         });
 
@@ -505,7 +532,7 @@ describe('homepage', () => {
                             .delete('/api/users')
                             .expect(405)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Method Not Allowed');
+                                expect(response.body.msg).to.equal('Method Not Allowed: only GET and POST methods are allowed on this route (/api/users).');
                             });
                         });
 
@@ -514,7 +541,7 @@ describe('homepage', () => {
                             .put('/api/users')
                             .expect(405)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Method Not Allowed');
+                                expect(response.body.msg).to.equal('Method Not Allowed: only GET and POST methods are allowed on this route (/api/users).');
                             });
                         });
 
@@ -524,7 +551,7 @@ describe('homepage', () => {
                             .send({ username: "", name: "Brooklyn Heights", avatar_url: "" })
                             .expect(400)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Bad Request');
+                                expect(response.body.msg).to.equal('Bad Request: request body is not in the correct format (username is a required field).');
                             });
                         });
 
@@ -534,7 +561,7 @@ describe('homepage', () => {
                             .send({ username: "rogersop", name: "", avatar_url: "" })
                             .expect(422)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Unprocessable Entity');
+                                expect(response.body.msg).to.equal('Unprocessable Entity: "rogersop" already exists in the database.');
                             });
                         });
 
@@ -582,7 +609,7 @@ describe('homepage', () => {
                             .put('/api/comments/5')
                             .expect(405)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Method Not Allowed');
+                                expect(response.body.msg).to.equal('Method Not Allowed: only PATCH and DELETE methods are allowed on this route (/api/comments/:comment_id).');
                             });
                         });
 
@@ -592,7 +619,7 @@ describe('homepage', () => {
                             .send({ inc_votes : 10 })
                             .expect(404)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Resource Not Found');
+                                expect(response.body.msg).to.equal('Resource Not Found: comment cannot be updated because "10000" is not a valid comment_id.');
                             });
                         });
 
@@ -601,7 +628,7 @@ describe('homepage', () => {
                             .delete('/api/comments/10000')
                             .expect(404)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Resource Not Found');
+                                expect(response.body.msg).to.equal('Resource Not Found: comment cannot be deleted because "10000" is not a valid comment_id.');
                             });
                         });
 
@@ -611,7 +638,7 @@ describe('homepage', () => {
                             .send({ inc_votes : "dog" })
                             .expect(400)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Bad Request');
+                                expect(response.body.msg).to.equal('Bad Request: "dog" is not a valid value for inc_votes (must be an integer).');
                             });
                         });
 
@@ -621,7 +648,7 @@ describe('homepage', () => {
                             .send({ inc_votes : 1 })
                             .expect(400)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Bad Request');
+                                expect(response.body.msg).to.equal('Bad Request: "dog" is not a valid endpoint (must be an integer).');
                             });
                         });
 
@@ -630,7 +657,7 @@ describe('homepage', () => {
                             .delete('/api/comments/dog')
                             .expect(400)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Bad Request');
+                                expect(response.body.msg).to.equal('Bad Request: "dog" is not a valid endpoint (must be an integer).');
                             });
                         });
                        
@@ -656,7 +683,7 @@ describe('homepage', () => {
                             .delete('/api')
                             .expect(405)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Method Not Allowed');
+                                expect(response.body.msg).to.equal('Method Not Allowed: only GET methods are allowed on this route (/api).');
                             });
                         });
 

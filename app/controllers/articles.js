@@ -6,23 +6,25 @@ const { checkCommentBodyFormat, checkArticleBodyFormat } = require('../../utils/
 function sendArticles (req, res, next) {
     fetchArticles(req.query)
     .then(articles => {
-        if ((req.query.order) && (req.query.order !== 'asc' && req.query.order !== 'desc')) return Promise.reject({code: 400});
+        if ((req.query.order) && (req.query.order !== 'asc' && req.query.order !== 'desc')) {
+            return Promise.reject({ code: 400, msg: `Bad Request: "${req.query.order}" is not a valid order.` });
+        }
         
         else if (articles.length === 0 && req.query.topic) {
             checkTopic(req.query.topic).then(([topic]) => {
                 if (topic) res.status(204).send();
-                else Promise.reject({code: 404}).catch(next);
+                else Promise.reject({ code: 404, msg: `Resource Not Found: "${req.query.topic}" is not a valid topic.` }).catch(next);
             });
         }
         
         else if (articles.length === 0 && req.query.author) {
             checkUser(req.query.author).then(([author]) => {
                 if (author) res.status(204).send();
-                else Promise.reject({code: 404}).catch(next);
+                else Promise.reject({ code: 404, msg: `Resource Not Found: "${req.query.author}" is not a valid author.` }).catch(next);
             });
         }
         
-        else res.status(200).send({ articles });
+        else res.status(200).send({ articles, total_count: articles.length });
     })
 
     .catch(next);
@@ -30,13 +32,13 @@ function sendArticles (req, res, next) {
 
 function sendArticleByID (req, res, next) {
     checkArticle(req.params.article_id)
-    .then(([response]) => {
-        if (response) {
+    .then(([article]) => {
+        if (article) {
             fetchArticleByID(req.params)
             .then(([articles]) => {
                 res.status(200).send({ articles });
             });
-        } else Promise.reject({code: 404}).catch(next);
+        } else Promise.reject({ code: 404, msg: `Resource Not Found: there are no articles with an id of "${req.params.article_id}".` }).catch(next);
     });
 };
 
@@ -52,7 +54,7 @@ function sendCommentsByArticleID (req, res, next) {
 
             }).catch(next);
 
-        } else Promise.reject({code: 404}).catch(next);
+        } else Promise.reject({ code: 404, msg: `Resource Not Found: there are no articles (and therefore no comments) with an id of "${req.params.article_id}".` }).catch(next);
     }).catch(next);
 };
 
@@ -74,9 +76,9 @@ function sendPostedComment (req, res, next) {
                     .then(([comment]) => {
                         return res.status(201).send({ comment });
                     }).catch(next);
-                } else Promise.reject({code: 422}).catch(next);
-            } else Promise.reject({code: 400}).catch(next);
-        } else Promise.reject({code: 404}).catch(next);
+                } else Promise.reject({ code: 422, msg: `Unprocessable Entity: "${req.body.username}" is not a registered user, and therefore cannot post comments.` }).catch(next);
+            } else Promise.reject({ code: 400, msg: 'Bad Request: request body is not in the correct format (username and body are both required fields).' }).catch(next);
+        } else Promise.reject({ code: 404, msg: `Resource Not Found: there are no articles with an id of "${req.params.article_id}", so comment cannot be posted.` }).catch(next);
     }).catch(next);
 };
 
@@ -86,7 +88,7 @@ function sendAddedArticle (req, res, next) {
         .then(([article]) => {
             return res.status(201).send({ article });
         }).catch(next);
-    } else Promise.reject({code: 400}).catch(next);
+    } else Promise.reject({ code: 400, msg: 'Bad Request: request body is not in the correct format (title, body, author & topic are all required fields).' }).catch(next);
 };
 
 function confirmDeletedArticle (req, res, next) {
@@ -95,7 +97,7 @@ function confirmDeletedArticle (req, res, next) {
         if (article) {
             deleteArticle(req.params.article_id)
             .then(() => res.status(204).send());
-        } else Promise.reject({code: 404}).catch(next);
+        } else Promise.reject({ code: 404, msg: `Resource Not Found: there are no articles with an id of "${req.params.article_id}".` }).catch(next);
     }).catch(next);
 };
 
