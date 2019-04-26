@@ -20,7 +20,9 @@ apiRouter.route('/')
                     author: "filters articles by username",
                     topic: "filters articles by topic",
                     sort_by: "sorts articles by any valid column (default of created_at)",
-                    order: "order of sort (default of desc)"
+                    order: "order of sort (default of desc)",
+                    limit: "limit results per page (default of 10)",
+                    p: "given limit, go to certain page (default of 1)"
                 },
                 response_if_sucessful: "array of articles in the database (no body)"
             },
@@ -30,7 +32,9 @@ apiRouter.route('/')
             '(GET) /API/ARTICLES/:ARTICLE_ID/COMMENTS': {
                 available_queries: {
                     sort_by: "sorts comments by any valid column (default of created_at)",
-                    order: "order of sort (default of desc)"
+                    order: "order of sort (default of desc)",
+                    limit: "limit results per page (default of 10)",
+                    p: "given limit, go to certain page (default of 1)"
                 },
                 response_if_successful: "comments for specific article"
             },

@@ -417,7 +417,7 @@ describe('homepage', () => {
                     .send({ inc_votes : "dog" })
                     .expect(400)
                     .then(response => {
-                        expect(response.body.msg).to.equal('Bad Request: "dog" is not a valid value for inc_votes (must be an integer).');
+                        expect(response.body.msg).to.equal('Bad Request: request body needs to be an object with a key of "inc_votes" and a value of some integer.');
                     });
                 });
 
@@ -647,7 +647,7 @@ describe('homepage', () => {
                             .send({ inc_votes : "dog" })
                             .expect(400)
                             .then(response => {
-                                expect(response.body.msg).to.equal('Bad Request: "dog" is not a valid value for inc_votes (must be an integer).');
+                                expect(response.body.msg).to.equal('Bad Request: request body needs to be an object with a key of "inc_votes" and a value of some integer.');
                             });
                         });
 

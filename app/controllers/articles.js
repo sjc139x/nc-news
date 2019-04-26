@@ -1,7 +1,7 @@
 const { fetchArticles, fetchArticleByID, fetchCommentsByArticleID, updateArticle, postComment, checkArticle, addArticle, deleteArticle } = require('../models/articles');
 const { checkTopic } = require('../models/topics');
 const { checkUser } = require('../models/users');
-const { checkCommentBodyFormat, checkArticleBodyFormat } = require('../../utils/utilFuncs');
+const { checkCommentBodyFormat, checkArticleBodyFormat, checkVotesBodyFormat } = require('../../utils/utilFuncs');
 
 function sendArticles (req, res, next) {
     fetchArticles(req.query)
@@ -57,11 +57,12 @@ function sendCommentsByArticleID (req, res, next) {
 };
 
 function sendUpdatedArticle (req, res, next) {
+    if (checkVotesBodyFormat(req.body)) {
         updateArticle({ ...req.params, ...req.body })
         .then(([article]) => {
             res.status(200).send({ article });
-        })
-        .catch(next);
+        }).catch(next);
+    } else Promise.reject({ code: 400, msg: 'Bad Request: request body needs to be an object with a key of "inc_votes" and a value of some integer.' }).catch(next);
 };
 
 function sendPostedComment (req, res, next) {

@@ -53,7 +53,7 @@ function checkCommentBodyFormat (body) {
 
 
 function checkVotesBodyFormat (body) {
-    if (typeof Object.values(body)[0] === 'number') return true;
+    if ((typeof Object.values(body)[0] === 'number') && (Object.keys(body)[0].toString() === [ 'inc_votes' ].toString())) return true;
     else return false;
 };
 

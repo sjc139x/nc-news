@@ -10,7 +10,7 @@ function sendUpdatedComment (req, res, next) {
                 .then(([comment]) => res.status(200).send({ comment }));
             } else Promise.reject({ code: 404, msg: `Resource Not Found: comment cannot be updated because "${req.params.comment_id}" is not a valid comment_id.` }).catch(next);
         }).catch(next);
-    } else Promise.reject({ code: 400, msg: `Bad Request: "${req.body.inc_votes}" is not a valid value for inc_votes (must be an integer).` }).catch(next);
+    } else Promise.reject({ code: 400, msg: 'Bad Request: request body needs to be an object with a key of "inc_votes" and a value of some integer.' }).catch(next);
 };
 
 function confirmDeletedComment (req, res, next) {

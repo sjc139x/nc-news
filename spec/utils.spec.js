@@ -191,6 +191,7 @@ describe('checkVotesBodyFormat()', () => {
     });
     it('returns false when object is in incorrect format', () => {
         expect(checkVotesBodyFormat({ inc_votes: "dog" })).to.equal(false);
+        expect(checkVotesBodyFormat({ gfdsdfgh: "dog" })).to.equal(false);
     });
 });
 
