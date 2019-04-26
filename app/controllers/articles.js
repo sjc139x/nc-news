@@ -6,6 +6,7 @@ const { checkCommentBodyFormat, checkArticleBodyFormat } = require('../../utils/
 function sendArticles (req, res, next) {
     fetchArticles(req.query)
     .then(articles => {
+
         if ((req.query.order) && (req.query.order !== 'asc' && req.query.order !== 'desc')) {
             return Promise.reject({ code: 400, msg: `Bad Request: "${req.query.order}" is not a valid order.` });
         }
@@ -24,22 +25,20 @@ function sendArticles (req, res, next) {
             });
         }
         
-        else res.status(200).send({ articles, total_count: articles.length });
+        else res.status(200).send({ articles, total_count: 0 });
     })
 
     .catch(next);
 };
 
 function sendArticleByID (req, res, next) {
-    checkArticle(req.params.article_id)
-    .then(([article]) => {
-        if (article) {
-            fetchArticleByID(req.params)
-            .then(([articles]) => {
-                res.status(200).send({ articles });
-            });
-        } else Promise.reject({ code: 404, msg: `Resource Not Found: there are no articles with an id of "${req.params.article_id}".` }).catch(next);
-    });
+        checkArticle(req.params.article_id)
+        .then(([article]) => {
+            if (article) {
+                fetchArticleByID(req.params)
+                .then(([articles]) => res.status(200).send({ articles })).catch(next);
+            } else Promise.reject({ code: 404, msg: `Resource Not Found: there are no articles with an id of "${req.params.article_id}".` }).catch(next);
+        }).catch(next);
 };
 
 function sendCommentsByArticleID (req, res, next) {
@@ -48,7 +47,6 @@ function sendCommentsByArticleID (req, res, next) {
         if (article_id) {
             fetchCommentsByArticleID({ ...req.params, ...req.query })
             .then(comments => {
-    
                 if (comments.length !== 0) return res.status(200).send({ comments });
                 else return res.status(204).send();
 

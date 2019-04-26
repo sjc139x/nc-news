@@ -327,6 +327,15 @@ describe('homepage', () => {
                     });
                 });
 
+                it('(GET // 400) sends 400 when client makes an ill-formed article request', () => {
+                    return request(app)
+                    .get('/api/articles/not-an-article-id')
+                    .expect(400)
+                    .then(response => {
+                        expect(response.body.msg).to.equal('Bad Request: "not-an-article-id" is not a valid endpoint (must be an integer).');
+                    });
+                });
+
                 it('(GET // 404) sends 404 when client makes a well-formed but non-existent article comment request', () => {
                     return request(app)
                     .get('/api/articles/10000/comments')
