@@ -297,5 +297,6 @@ module.exports = [
     body:
       'from the ouuuuttssiiiiiideeeeeeee',
     created_at: 1492163783248,
+    votes: 69
   }
 ];

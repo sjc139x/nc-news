@@ -18,16 +18,19 @@ function fetchArticles ({ author, topic, sort_by, order, limit, p }) {
 
 function fetchArticleByID ({ article_id }) {
     return connection
-    .select('article_id', 'author', 'title', 'body', 'topic', 'created_at', 'votes')
+    .select('articles.author', 'articles.title', 'articles.article_id', 'articles.body', 'articles.topic', 'articles.created_at', 'articles.votes')
     .from('articles')
+    .leftJoin('comments', 'articles.article_id', 'comments.article_id')
+    .groupBy('articles.article_id')
+    .count('comments.comment_id as comment_count')
     .modify(query => {
-        if (article_id) query.where({ article_id });
+        if (article_id) query.where({ 'articles.article_id': article_id });
     });
 };
 
 function fetchCommentsByArticleID({ article_id, sort_by, order, limit, p }) {
     return connection
-    .select('comment_id', 'votes', 'created_at', 'author', 'body')
+    .select('comment_id', 'votes', 'created_at', 'author', 'body', 'article_id')
     .from('comments')
     .where('article_id', article_id)
     .orderBy(sort_by || 'created_at', order || 'desc')

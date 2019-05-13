@@ -127,18 +127,19 @@ describe('homepage', () => {
                 .get('/api/articles/12')
                 .expect(200)
                 .then(response => {
-                    expect(response.body.articles).to.be.an('object');
-                    expect(response.body.articles.body).to.equal('Have you seen the size of that thing?');
+                    expect(response.body.article).to.be.an('object');
+                    expect(response.body.article).to.have.all.keys('author', 'title', 'article_id', 'body', 'topic', 'created_at', 'votes', 'comment_count');
+                    expect(response.body.article.body).to.equal('Have you seen the size of that thing?');
                 });
             });
 
-            it('(GET // 200) serves up comment info for the specific article, including keys of COMMENT_ID, VOTES, CREATED_AT, AUTHOR and BODY', () => {
+            it('(GET // 200) serves up comment info for the specific article, including keys of COMMENT_ID, VOTES, CREATED_AT, AUTHOR, BODY and ARTICLE_ID', () => {
                 return request(app)
                 .get('/api/articles/1/comments')
                 .expect(200)
                 .then(response => {
                     const randomIndex = Math.floor(Math.random() * response.body.comments.length);
-                    expect(response.body.comments[randomIndex]).to.have.all.keys('comment_id', 'votes', 'created_at', 'author', 'body');
+                    expect(response.body.comments[randomIndex]).to.have.all.keys('comment_id', 'votes', 'created_at', 'author', 'body', 'article_id');
                 });
             });
 
@@ -345,12 +346,12 @@ describe('homepage', () => {
                     });
                 });
 
-                it('(GET // 204) sends 204 when article exists but has no associated comments', () => {
+                it('(GET // 200) sends 204 when article exists but has no associated comments', () => {
                     return request(app)
                     .get('/api/articles/13/comments')
-                    .expect(204)
+                    .expect(200)
                     .then(response => {
-                        expect(response.body).to.eql({});
+                        expect(response.body.comments).to.eql([]);
                     });
                 });
 

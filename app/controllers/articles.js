@@ -36,7 +36,7 @@ function sendArticleByID (req, res, next) {
         .then(([article]) => {
             if (article) {
                 fetchArticleByID(req.params)
-                .then(([articles]) => res.status(200).send({ articles })).catch(next);
+                .then(([article]) => res.status(200).send({ article })).catch(next);
             } else Promise.reject({ code: 404, msg: `Resource Not Found: there are no articles with an id of "${req.params.article_id}".` }).catch(next);
         }).catch(next);
 };
@@ -46,12 +46,8 @@ function sendCommentsByArticleID (req, res, next) {
     .then(([article_id]) => {
         if (article_id) {
             fetchCommentsByArticleID({ ...req.params, ...req.query })
-            .then(comments => {
-                if (comments.length !== 0) return res.status(200).send({ comments });
-                else return res.status(204).send();
-
-            }).catch(next);
-
+            .then(comments => res.status(200).send({ comments }))
+            .catch(next);
         } else Promise.reject({ code: 404, msg: `Resource Not Found: there are no articles (and therefore no comments) with an id of "${req.params.article_id}".` }).catch(next);
     }).catch(next);
 };
