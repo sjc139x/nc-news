@@ -17,6 +17,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+    
     if (err.code === '42703') res.status(400).send({ msg: `Bad Request: "${req.query.sort_by}" is not a column in the table, so cannot be used to sort.` });
     else if (err.code === 400) res.status(400).send({ msg: err.msg || 'Bad Request' });
     else if (err.code === '22P02') {
