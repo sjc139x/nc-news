@@ -8,7 +8,6 @@ const {
   checkTopicBodyFormat,
   checkArticleBodyFormat
 } = require("../utils/utilFuncs");
-//simplify below and make more rigorous testing in line with what ant said
 
 describe("formatArticleData()", () => {
   it("returns a new empty array when given an empty array", () => {

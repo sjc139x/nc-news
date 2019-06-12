@@ -45,6 +45,28 @@ function fetchArticleByID({ article_id }) {
     });
 }
 
+function fetchArticlesWithoutLimit({ author, topic, sort_by, order }) {
+  return connection
+    .select(
+      "articles.author",
+      "articles.title",
+      "articles.article_id",
+      "articles.topic",
+      "articles.created_at",
+      "articles.votes",
+      "articles.image"
+    )
+    .from("articles")
+    .leftJoin("comments", "articles.article_id", "comments.article_id")
+    .groupBy("articles.article_id")
+    .count("comments.comment_id as comment_count")
+    .orderBy(sort_by || "created_at", order || "desc")
+    .modify(query => {
+      if (author) query.where({ "articles.author": author });
+      if (topic) query.where({ topic });
+    });
+}
+
 function fetchCommentsByArticleID({ article_id, sort_by, order, limit, p }) {
   return connection
     .select("comment_id", "votes", "created_at", "author", "body", "article_id")
@@ -109,5 +131,6 @@ module.exports = {
   postComment,
   checkArticle,
   addArticle,
-  deleteArticle
+  deleteArticle,
+  fetchArticlesWithoutLimit
 };

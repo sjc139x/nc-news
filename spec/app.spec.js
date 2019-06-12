@@ -253,7 +253,7 @@ describe('homepage', () => {
                 });
             });
 
-            xit('(GET // 200) includes a "total_count" prop which counts the articles returned, given queries and ignoring limit', () => {
+            it('(GET // 200) includes a "total_count" prop which counts the articles returned, given queries and ignoring limit', () => {
                 return request(app)
                 .get('/api/articles')
                 .expect(200)

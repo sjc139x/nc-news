@@ -6,7 +6,8 @@ const {
   postComment,
   checkArticle,
   addArticle,
-  deleteArticle
+  deleteArticle,
+  fetchArticlesWithoutLimit
 } = require("../models/articles");
 const { checkTopic } = require("../models/topics");
 const { checkUser } = require("../models/users");
@@ -49,9 +50,13 @@ function sendArticles(req, res, next) {
               }" is not a valid author.`
             }).catch(next);
         });
-      } else res.status(200).send({ articles, total_count: 0 });
+      } else
+        fetchArticlesWithoutLimit(req.query).then(articlesNoLimit => {
+          res
+            .status(200)
+            .send({ articles, total_count: articlesNoLimit.length });
+        });
     })
-
     .catch(next);
 }
 
@@ -143,20 +148,6 @@ function sendPostedComment(req, res, next) {
         }).catch(next);
     })
     .catch(next);
-
-  // Promise.all([checkArticle(req.params.article_id), checkUser(req.body.username || 'no-username-given'), checkCommentBodyFormat(req.body)])
-  // .then(([[article], [user], checkFormat]) => {
-  //     if (article) {
-  //         if (checkFormat) {
-  //             if (user) {
-  //                 postComment([ req.params, req.body ])
-  //                 .then(([comment]) => {
-  //                     return res.status(201).send({ comment });
-  //                 }).catch(next);
-  //             } else Promise.reject({ code: 422, msg: `Unprocessable Entity: "${req.body.username}" is not a registered user, and therefore cannot post comments.` }).catch(next);
-  //         } else Promise.reject({ code: 400, msg: 'Bad Request: request body is not in the correct format (username and body are both required fields).' }).catch(next);
-  //     } else Promise.reject({ code: 404, msg: `Resource Not Found: there are no articles with an id of "${req.params.article_id}", so comment cannot be posted.` }).catch(next);
-  // }).catch(next);
 }
 
 function sendAddedArticle(req, res, next) {
