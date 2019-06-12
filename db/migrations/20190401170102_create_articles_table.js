@@ -17,7 +17,9 @@ exports.up = function(knex, Promise) {
       .inTable("users")
       .onDelete("CASCADE");
     articlesTable.datetime("created_at").defaultTo(knex.fn.now());
-    articlesTable.string("image");
+    articlesTable
+      .string("image")
+      .defaultTo("https://i.ibb.co/3hCVGwM/iconfinder-38-456512.png");
   });
 };
 

@@ -69,7 +69,7 @@ describe('homepage', () => {
 
         describe('/articles', () => {
             
-            it('(GET // 200) serves up an array of article objects, each with specific keys of AUTHOR, TITLE, ARTICLE_ID, TOPIC, CREATED_AT, VOTES and COMMENT_COUNT', () => {
+            it('(GET // 200) serves up an array of article objects, each with specific keys of AUTHOR, TITLE, ARTICLE_ID, TOPIC, CREATED_AT, VOTES, IMAGE and COMMENT_COUNT', () => {
                 return request(app)
                 .get('/api/articles')
                 .expect(200)
@@ -77,7 +77,7 @@ describe('homepage', () => {
                     const randomIndex = Math.floor(Math.random() * response.body.articles.length);
                     expect(response.body.articles).to.be.an('array');
                     expect(response.body.articles[randomIndex]).to.be.an('object');
-                    expect(response.body.articles[randomIndex]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count');
+                    expect(response.body.articles[randomIndex]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'image', 'comment_count');
                 });
             });
 
@@ -128,7 +128,7 @@ describe('homepage', () => {
                 .expect(200)
                 .then(response => {
                     expect(response.body.article).to.be.an('object');
-                    expect(response.body.article).to.have.all.keys('author', 'title', 'article_id', 'body', 'topic', 'created_at', 'votes', 'comment_count');
+                    expect(response.body.article).to.have.all.keys('author', 'title', 'article_id', 'body', 'topic', 'created_at', 'votes', 'image', 'comment_count');
                     expect(response.body.article.body).to.equal('Have you seen the size of that thing?');
                 });
             });
@@ -240,7 +240,7 @@ describe('homepage', () => {
                 .expect(201)
                 .then(response => {
                     expect(response.body.article).to.be.an('object');
-                    expect(response.body.article).to.have.all.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at');
+                    expect(response.body.article).to.have.all.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'image', 'created_at');
                 });
             });
 
