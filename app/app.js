@@ -5,9 +5,10 @@ const app = express();
 const apiRouter = require("./routes/api");
 
 const bodyParser = require("body-parser");
-app.use(cors());
 
 app.use(bodyParser.json());
+
+app.use(cors());
 
 app.use("/api", apiRouter);
 
@@ -19,32 +20,26 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
   if (err.code === "42703")
-    res
-      .status(400)
-      .send({
-        msg: `Bad Request: "${
-          req.query.sort_by
-        }" is not a column in the table, so cannot be used to sort.`
-      });
+    res.status(400).send({
+      msg: `Bad Request: "${
+        req.query.sort_by
+      }" is not a column in the table, so cannot be used to sort.`
+    });
   else if (err.code === 400)
     res.status(400).send({ msg: err.msg || "Bad Request" });
   else if (err.code === "22P02") {
     if (req.body.inc_votes && typeof req.body.inc_votes !== "number")
-      res
-        .status(400)
-        .send({
-          msg: `Bad Request: "${
-            req.body.inc_votes
-          }" is not a valid value for inc_votes (must be an integer).`
-        });
+      res.status(400).send({
+        msg: `Bad Request: "${
+          req.body.inc_votes
+        }" is not a valid value for inc_votes (must be an integer).`
+      });
     else if (typeof req.originalUrl.split("/")[3] !== "number")
-      res
-        .status(400)
-        .send({
-          msg: `Bad Request: "${
-            req.originalUrl.split("/")[3]
-          }" is not a valid endpoint (must be an integer).`
-        });
+      res.status(400).send({
+        msg: `Bad Request: "${
+          req.originalUrl.split("/")[3]
+        }" is not a valid endpoint (must be an integer).`
+      });
   }
   next(err);
 });
